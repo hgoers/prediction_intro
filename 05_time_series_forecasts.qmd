@@ -1,0 +1,150 @@
+---
+execute: 
+  warning: false
+---
+
+# Time Series Regression Models
+
+```{r}
+library(tidyverse)
+library(Lahman)
+library(tsibble)
+library(ggtime)
+library(fable)
+library(broom)
+```
+
+Now that we have a good understanding of our time series, we want to start modelling relationships within it. What, in the past, has made our outcomes of interest rise and fall? Once we can answer that question, we can begin to try to predict the future.
+
+This chapter introduces time series regression models.
+
+## Linear regression models
+
+To begin, we will focus on linear regression models. These models assume that the predicted effect of a change in our predictor on the outcome is the same no matter the value of the predictor. For example, we assume that a country's GDP will grow at the same rate across all years.
+
+This is a stringent assumption, but there are many cases where it is appropriate. If you are lucky enough to be modelling something with a linear relationship, you get to use a model that is intuative and (relatively) easy to interpret. The upside is large.
+
+Let's introduce this model with one such example of a linear relationship. We are going to look at the relationship between baseball teams' winning percentage and their run differential.
+
+A team's winning percentage is simply the proportion of games that win. For example, if a team wins six of the 10 games they have played, their winning percentage is 60 percent. Their run differential is the difference between the number of runs they score and concede. So if a team makes 12 runs but their opponent scores 16, their run differential will be -4.
+
+Let's take a look at this relationship across all teams' seasons from 2005:
+
+```{r}
+Teams |> 
+  filter(yearID >= 2005) |> 
+  transmute(yearID, teamID, RD = R - RA, WPct = W / G) |> 
+  as_tsibble(index = yearID, key = teamID) |> 
+  ggplot(aes(x = RD, y = WPct)) + 
+  geom_point()
+```
+
+That's a strong positive relationship. Teams with a high run differential tended to win most of their games. Teams with a low differential tended to lose. In general, this relationship looks linear: I could draw a straight line through those dots and capture the general trend within them very well.
+
+So, we're going to assume the relationship is linear and we can, therefore, model it using linear regression. To do this, we are going to focus on one team: my sweet, beleaguered Nats. Let's look at their performance since entering the league in their current form in 2005:
+
+```{r}
+nats_ts <- Teams |> 
+  filter(name == "Washington Nationals", yearID >= 2005) |> 
+  transmute(yearID, RD = R - RA, WPct = W / G) |> 
+  as_tsibble(index = yearID)
+
+autoplot(nats_ts, WPct)
+```
+
+After a slow start, they entered the glory years. These years culminated in the Nats winning the World Series in 2019. We made [Screech](https://www.mlb.com/nationals/ballpark/entertainment/screech) so proud! After that, we took a downfall. I don't even want to talk about this season. It's a good thing it's not in the data set.
+
+So, do the Nats follow the general trend of tending to win lots of games in seasons in which they scored high run differentials?
+
+```{r}
+ggplot(nats_ts, aes(x = RD, y = WPct)) + 
+  geom_point()
+```
+
+It looks to be the case. We tended to win a high proportion of our games in the seasons in which we scored high run differentials. Conversely, we tended to win a low proportion of our games in the seasons we scored low run differentials.
+
+We can model that using linear least squares regression:
+
+```{r}
+nats_m <- model(nats_ts, TSLM(WPct ~ RD))
+
+report(nats_m)
+```
+
+::: {.callout-note collapse="TRUE"}
+Note, this is equivalent to running:
+
+```{r}
+lm(WPct ~ RD, data = nats_ts)
+```
+:::
+
+```{r}
+intercept_coef <- tidy(nats_m) |> 
+  filter(term == "(Intercept)") |> 
+  pull(estimate)
+
+RD_coef <- tidy(nats_m) |> 
+  filter(term == "RD") |> 
+  pull(estimate)
+```
+
+```{r}
+ggplot(nats_ts, aes(x = RD, y = WPct)) + 
+  geom_point() + 
+  geom_line(aes(y = augment(nats_m)$.fitted)) + 
+  theme_minimal()
+```
+
+We can take advantage of `broom::augment()` to calculate the predicted winning percentage for each given run differential, and how far that predicted value is from what we observed.
+
+```{r}
+augment(nats_m) |> 
+  select(yearID, WPct, .fitted, .resid) |> 
+  knitr::kable()
+```
+
+```{r}
+augment(nats_m) |> 
+  ggplot(aes(x = yearID)) +
+  geom_line(aes(y = WPct), colour = "lightgrey") + 
+  geom_line(aes(y = .fitted), colour = "darkred") + 
+  theme_minimal()
+```
+
+## Is this a good model?
+
+The differences between our predicted values and the ones that happened in the real world are known as the **training-set errors** or **residuals**. 
+
+With time-series data, the value of your variable at time $t$ is probably very similar to its value at time $t-1$. Therefore, when fitting a regression model to time-series data, it is common to find autocorrelation in the residuals.  In this case, the estimated model violates the assumption of no autocorrelation in the errors. While the forecasts are not wrong, their prediction intervals can be larger than they need to be. 
+
+```{r}
+gg_tsresiduals(nats_m)
+```
+
+The time plot shows changing variation over time. This heteroscedasticity will potentially make the prediction interval coverage inaccurate.
+
+The autocorrelation plot shows no significant spikes. It is unlikely to have any noticeable impact on the forecasts or the prediction intervals. 
+
+Our residuals are skewed to the left, which may also affect the coverage probability of the prediction intervals.
+
+We would expect the residuals to be randomly scattered without showing any systematic patterns. A simple and quick way to check this is to examine scatterplots of the residuals against each of the predictor variables. If these scatterplots show a pattern, then the relationship may be non-linear and the model will need to be modified accordingly. 
+
+Happily, ours shows no pattern: 
+
+```{r}
+augment(nats_m) |> 
+  left_join(nats_ts, by = join_by(yearID, WPct)) |> 
+  ggplot(aes(x = RD, y = .resid)) + 
+  geom_point() + 
+  labs(x = "Run differential", y = "Residuals")
+```
+
+You should also plot your residuals against your fitted values to see if a pattern exists. If there is a pattern, there may be **heteroscedasticity** in the errors. This means that the variance of the residuals may not be constant. Happily again, no pattern exists: 
+
+```{r}
+augment(nats_m) |> 
+  ggplot(aes(x = .fitted, y = .resid)) + 
+  geom_point() + 
+  labs(x = "Fitted", y = "Residuals")
+```

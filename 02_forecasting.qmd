@@ -1,0 +1,10 @@
+---
+execute: 
+  warning: false
+---
+
+# Introduction to Forecasting
+
+## What can be forecasted?
+
+## The statistics of forecasting

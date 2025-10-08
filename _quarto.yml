@@ -2,13 +2,16 @@ project:
   type: book
 
 book:
-  title: "prediction_intro"
-  author: "Norah Jones"
+  title: "From Polls to Playoffs: The Science of Prediction"
+  author: "Harriet Goers"
   date: "9/30/2025"
   chapters:
     - index.qmd
-    - intro.qmd
-    - summary.qmd
+    - 01_whole_game.qmd
+    - 02_forecasting.qmd
+    - 03_time_series_r.qmd
+    - 04_time_series_decomposed.qmd
+    - 05_time_series_forecasts.qmd
     - references.qmd
 
 bibliography: references.bib

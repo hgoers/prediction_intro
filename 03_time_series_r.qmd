@@ -1,0 +1,131 @@
+---
+execute: 
+  warning: false
+---
+
+```{r}
+library(tidyverse)
+library(tsibble)
+library(ggtime)
+```
+
+# Introduction to Time Series in R
+
+Before we dive in, you need to learn how to work with time series data in R. This chapter introduces you to the `tsibble` and `ggtime` R packages, which make working with and visualizing time series data easy. 
+
+## `tsibble` objects
+
+The easiest way to handle time series data in R is as a `tsibble` object. For example, here is a normal `tibble` of Mr Trump's approval ratings across his current term in office:
+
+```{r}
+trump_approval <- read_rds(here::here("data", "trump_approval.rds"))
+trump_approval
+```
+
+These data are actually collected on a weekly basis by YouGov on behalf of *The Economist*. Although they have very good coverage, they do miss some weeks. It is difficult to see that these are weekly data and where our coverage is missing in this current format.
+
+So, let's convert it to a `tsibble`:
+
+```{r}
+trump_approval_ts <- trump_approval |> 
+  mutate(date = yearweek(date)) |> 
+  as_tsibble()
+
+trump_approval_ts
+```
+
+Much better! The `tsibble` handles the "timing" of it all much more nicely than a standard `tibble`. By converting the `date` column to weekly data using the `yearweek()` function and the data set itself into a `tsibble` object, I have ensured that any visualizations or models I build using these data will be treated appropriately.
+
+### Indexes
+
+The column that records the time of your observations is referred to as the `index`. `as_tibble()` will often do a good job of guessing which column should be treated as your index, but you can specify it directly using the `index` argument. For examle:
+
+```{r}
+trump_approval |> 
+  mutate(date = yearweek(date)) |> 
+  as_tibble(index = date)
+```
+
+`tsibble` objects can handle many different frequencies:
+
+```{r}
+#| echo: false
+
+tibble(Frequency = c("Yearly", "Quarterly", "Monthly", "Weekly", "Daily", 
+                     "Sub-daily"),
+       Function = c("`year()`", "`yearquarter()`", "`yearmonth()`", 
+                    "`yearweek()`", "See: `as_date()`", "See `as_datetime()`")) |> 
+  knitr::kable()
+```
+
+### Keys
+
+`tsibble` objects are also very good at handling multiple groups within your data. For example, you might have data on all teams in a league. It can be useful to group those data by team.
+
+Below is data on each AFL team's performance throughout the 2024 season. For example, we have data on their position in the ladder throughout the season (`ladder_position`), the cumulative number of points they have scored (`score_for`) and have had scored against them (`score_against`).
+
+There were 25 rounds in the regular season (excluding finals). Those rounds are my `index`. I want to track each team's performance across the season. Therefore, my `key` is the team.
+
+```{r}
+afl_ladder <- read_rds(here::here("data", "afl_ladder.rds"))
+
+afl_ladder_ts <- as_tsibble(afl_ladder, key = team, index = round_number)
+afl_ladder_ts
+```
+
+Notice that the `tsibble` object prints my key above the the data set. It recognizes that there are 18 different groups (teams) in my key. I now have 18 different time series (each team's performance across the season) stored in one convenient data set. I can look at overall trends and compare the 18 different teams' performance easily.
+
+### Working with `tsibble` objects
+
+On a `tsibble`, we can use all of the functions that you can use on a normal `tibble` or `data.frame` object. They are set up with the `tidyverse` in mind, so functions in that family work seamlessly.
+
+For example, I can filter my data set of Mr Trump's approval rating to look only at his approval in weeks five to 10 of his current term[^03_time_series_r-1]:
+
+[^03_time_series_r-1]: The poll only started after his fifth week in office.
+
+```{r}
+filter(trump_approval_ts, date <= yearweek("2025 W10"))
+```
+
+I can also quickly calculate Mr Trump's average approval rating across his term in office:
+
+```{r}
+summarise(trump_approval_ts, avg_approve = mean(approve))
+```
+
+## Plotting your time series data
+
+Patterns in our data are often most easily detected when we visualize them. The simplest plot to start with is a time series plot. The `ggtime` R package provides a series of functions that make visualizing time series data simple.
+
+For example, @fig-trump-approval shows Mr Trump's approval ratings across his current term.
+
+```{r}
+#| label: fig-trump-approval
+#| fig-cap: "Mr Trump's approval ratings since entering his second term in office."
+
+autoplot(trump_approval_ts) + 
+  theme_minimal() + 
+  labs(x = "Date",
+       y = "Approval rating (%)",
+       caption = "Data source: The Economist/YouGov") + 
+  scale_y_continuous(limits = c(0, 100))
+```
+
+We can see that Mr Trump's popularity is declining. In fact, he has not yet enjoyed more than 50 percent of the US voting public's approval.
+
+### Plotting grouped data
+
+We can also plot grouped data to more easily make comparisons between them. For example, @fig-afl-ladder plots each of the 18 AFL teams' score percentages across the 2024 season. Some teams, including long-suffering North Melbourne, never managed to score more points than they conceded. Other teams, including the Sydney Swans, managed to never dip below 100 percent.
+
+```{r}
+#| label: fig-afl-ladder
+#| fig-cap: "AFL teams' score percentage across the 2024 regular season."
+
+autoplot(afl_ladder_ts, percentage) + 
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  theme_minimal() + 
+  labs(x = "Round",
+       y = "Scoring percentage",
+       caption = "Data source: AFL Tables") + 
+  scale_y_continuous(labels = scales::percent)
+```

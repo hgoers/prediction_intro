@@ -1,0 +1,99 @@
+---
+execute: 
+  warning: false
+---
+
+```{r}
+library(tidyverse)
+library(tsibble)
+library(fable)
+```
+
+# The Whole Game
+
+This brief introduction outlines each step you will take to produce your forecasts. 
+
+To illustrate, we will look at Mr Trump's approval rating across his current term in office. These data are collected on a near-weekly basis by the polling firm YouGov on behalf of *The Economist*. 
+
+## Prepare your data
+
+You first need to prepare your data for analysis. This can often be the most time-consuming part of your data analysis process. Happily, I have cleaned our data for you. 
+
+The last step in this process is to convert your data set into a `tsibble` object, which has features that make time-series analysis easier.  
+
+```{r}
+trump_approval <- read_rds(here::here("data", "trump_approval.rds")) |> 
+  mutate(date = yearweek(date)) |> 
+  as_tsibble()
+
+trump_approval
+```
+
+## Plot your data
+
+Next, you should plot your data. This will allow you to get a sense of the overall pattern of your data across time. What is the overall pattern? Do you see any repeated patterns across time? @fig-trump-approval shows Mr Trump's approval rating since his first day in office. 
+
+```{r}
+#| label: fig-trump-approval
+#| fig-cap: "Mr Trump's approval ratings since entering his second term in office."
+
+autoplot(trump_approval) + 
+  theme_minimal() + 
+  labs(x = "Date",
+       y = "Approval rating (%)",
+       caption = "Data source: The Economist/YouGov") + 
+  scale_y_continuous(limits = c(0, 100))
+```
+
+## Specify your model
+
+Next you need to specify an appropriate model for your data. There are many different models from which you can select. We will discuss several in this course. 
+
+For now, I will select a simple model: a linear trend model (which we will discuss in detail shortly). 
+
+## Train your model
+
+Next, you need to train your selected model on your data. For example, to train my linear trend model, I will run the following: 
+
+```{r}
+fit <- trump_approval |> 
+  model(linear_trend = TSLM(approve ~ trend()))
+```
+
+I now have a linear trend model of Mr Trump's approval rating over time. 
+
+## Evaluate your model's performance
+
+Next, you should see how well your model performs on data on which it has not been trained. Can it accurately predict data it has never before seen? 
+
+## Forecast
+
+If you are happy with your model, you can use it to predict future values. For example, I am now going to forecast Mr Trump's approval ratings for the next five weeks using my linear trend model: 
+
+```{r}
+trump_approval_forecast <- forecast(fit, h = "5 weeks")
+trump_approval_forecast
+```
+
+I now have my forecast of Mr Trump's approval rating for the next five weeks (each row corresponds to one week's forecast). I have estimated a range of **plausible values** of his approval rating (`approve`). My **point estimate** is the center of this plausible range (`.mean`). 
+
+It can be helpful to look at these predicted approval ratings in their context. Let's plot them alongside his approval ratings so far: 
+
+```{r}
+#| label: fig-trump-forecast
+#| fig-cap: "Mr Trump's approval ratings, both observed and predicted."
+ 
+trump_approval_forecast |> 
+  autoplot(trump_approval) + 
+  theme_minimal() + 
+  labs(x = "Date",
+       y = "Approval rating (%)",
+       caption = "Data source: The Economist/YouGov") + 
+  scale_y_continuous(limits = c(0, 100))
+```
+
+Our simple model predicts that Mr Trump's declining popularity will continue despite the brief up-tick he appeared to enjoy last week. 
+
+This course introduces the skills you need to make predictions informed by what has happened in the past. Let's get started!
+
+
