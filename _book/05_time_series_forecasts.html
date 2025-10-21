@@ -105,35 +105,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -224,7 +195,6 @@ window.Quarto = {
    
   <ul>
   <li><a href="#linear-regression-models" id="toc-linear-regression-models" class="nav-link active" data-scroll-target="#linear-regression-models"><span class="header-section-number">5.1</span> Linear regression models</a></li>
-  <li><a href="#is-this-a-good-model" id="toc-is-this-a-good-model" class="nav-link" data-scroll-target="#is-this-a-good-model"><span class="header-section-number">5.2</span> Is this a good model?</a></li>
   </ul>
 </nav>
     </div>
@@ -254,9 +224,8 @@ window.Quarto = {
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Lahman)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggtime)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fable)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fable)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now that we have a good understanding of our time series, we want to start modelling relationships within it. What, in the past, has made our outcomes of interest rise and fall? Once we can answer that question, we can begin to try to predict the future.</p>
 <p>This chapter introduces time series regression models.</p>
@@ -266,10 +235,10 @@ window.Quarto = {
 <p>This is a stringent assumption, but there are many cases where it is appropriate. If you are lucky enough to be modelling something with a linear relationship, you get to use a model that is intuative and (relatively) easy to interpret. The upside is large.</p>
 <p>Let’s introduce this model with one such example of a linear relationship. We are going to look at the relationship between baseball teams’ winning percentage and their run differential.</p>
 <p>A team’s winning percentage is simply the proportion of games that win. For example, if a team wins six of the 10 games they have played, their winning percentage is 60 percent. Their run differential is the difference between the number of runs they score and concede. So if a team makes 12 runs but their opponent scores 16, their run differential will be -4.</p>
-<p>Let’s take a look at this relationship across all teams’ seasons from 2005:</p>
+<p>Let’s take a look at this relationship across all teams’ seasons from 2000:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Teams <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(yearID <span class="sc">&gt;=</span> <span class="dv">2005</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(yearID <span class="sc">&gt;=</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(yearID, teamID, <span class="at">RD =</span> R <span class="sc">-</span> RA, <span class="at">WPct =</span> W <span class="sc">/</span> G) <span class="sc">|&gt;</span> </span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> yearID, <span class="at">key =</span> teamID) <span class="sc">|&gt;</span> </span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> RD, <span class="at">y =</span> WPct)) <span class="sc">+</span> </span>
@@ -538,54 +507,6 @@ Coefficients:
 <div>
 <figure class="figure">
 <p><img src="05_time_series_forecasts_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="is-this-a-good-model" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="is-this-a-good-model"><span class="header-section-number">5.2</span> Is this a good model?</h2>
-<p>The differences between our predicted values and the ones that happened in the real world are known as the <strong>training-set errors</strong> or <strong>residuals</strong>.</p>
-<p>With time-series data, the value of your variable at time <span class="math inline">\(t\)</span> is probably very similar to its value at time <span class="math inline">\(t-1\)</span>. Therefore, when fitting a regression model to time-series data, it is common to find autocorrelation in the residuals. In this case, the estimated model violates the assumption of no autocorrelation in the errors. While the forecasts are not wrong, their prediction intervals can be larger than they need to be.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_tsresiduals</span>(nats_m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="05_time_series_forecasts_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>The time plot shows changing variation over time. This heteroscedasticity will potentially make the prediction interval coverage inaccurate.</p>
-<p>The autocorrelation plot shows no significant spikes. It is unlikely to have any noticeable impact on the forecasts or the prediction intervals.</p>
-<p>Our residuals are skewed to the left, which may also affect the coverage probability of the prediction intervals.</p>
-<p>We would expect the residuals to be randomly scattered without showing any systematic patterns. A simple and quick way to check this is to examine scatterplots of the residuals against each of the predictor variables. If these scatterplots show a pattern, then the relationship may be non-linear and the model will need to be modified accordingly.</p>
-<p>Happily, ours shows no pattern:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(nats_m) <span class="sc">|&gt;</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(nats_ts, <span class="at">by =</span> <span class="fu">join_by</span>(yearID, WPct)) <span class="sc">|&gt;</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> RD, <span class="at">y =</span> .resid)) <span class="sc">+</span> </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Run deficit"</span>, <span class="at">y =</span> <span class="st">"Residuals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="05_time_series_forecasts_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>You should also plot your residuals against your fitted values to see if a pattern exists. If there is a pattern, there may be <strong>heteroscedasticity</strong> in the errors. This means that the variance of the residuals may not be constant. Happily again, no pattern exists:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(nats_m) <span class="sc">|&gt;</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> .resid)) <span class="sc">+</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Fitted"</span>, <span class="at">y =</span> <span class="st">"Residuals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="05_time_series_forecasts_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

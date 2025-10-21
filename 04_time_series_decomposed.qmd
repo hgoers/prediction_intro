@@ -7,8 +7,9 @@ execute:
 ```{r}
 library(tidyverse)
 library(tsibble)
-library(ggtime)
-library(feasts)
+library(fable)
+library(feasts) # For decomposition and feature extraction
+library(ggtime) 
 ```
 
 ```{r}
@@ -22,9 +23,15 @@ us_turnout_ts <- read_rds(here::here("data", "us_turnout.rds")) |>
 
 # Finding Patterns Over Time
 
-At this early stage, we will focus on the skills and knowledge needed to explore and formalize the relationship between our outcome of interest and time itself. Is the President's approval rating increasing or decreasing the longer they stay in office? Are there meaningful differences between voter turnout in mid-term elections compared to presidential ones? Is it true that we are seeing [fewer and fewer .300 hitters](https://www.nytimes.com/athletic/6662614/2025/09/26/batting-average-mlb-value-hitter/) in the modern game? Once we have a handle on historical trends and patterns in our data, we will move on to using that information to make informed predictions about what comes next.
+## The Art of Decomposition
 
-## Trends
+At its core, time series forecasting is about recognizing patterns. When we look at a time series—like a stock price, a monthly sales figure, or a political approval rating—what we see is often a messy, complicated line. Our goal in this chapter is to develop the skills to explore and formalize the relationship between our outcome of interest and time itself by breaking that messy line into three cleaner, more predictable components: the **Trend**, the **Seasonality**, and the **Remainder**.
+
+This process is called **Time Series Decomposition**. It’s like taking apart a complex machine (the time series) into its simple, functional components. Once we understand how each component works in isolation, we can put them back together to make powerful predictions.
+
+The decomposition model we rely on is generally expressed as:
+
+Trends
 
 Let's take another look at Mr Trump's approval rating over his current term in office, which is shown in @fig-trump-approval. If I asked you to summarize how his popularity was tracking, what would you say?
 

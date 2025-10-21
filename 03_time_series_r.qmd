@@ -6,27 +6,58 @@ execute:
 ```{r}
 library(tidyverse)
 library(tsibble)
-library(ggtime)
+library(fable)  # Core modeling framework
+library(feasts) # Feature extraction and diagnostic tools
+library(ggtime) # For advanced time series plots
 ```
 
-# Introduction to Time Series in R
+# The Toolkit: R for Time Series
 
-Before we dive in, you need to learn how to work with time series data in R. This chapter introduces you to the `tsibble` and `ggtime` R packages, which make working with and visualizing time series data easy. 
+You are already proficient with R and the `tidyverse`, which gives you a powerful foundation for data manipulation. However, time series data are special. Unlike a standard dataset where each row is independent, **in a time series, the order matters.** A value today is highly dependent on the value yesterday.
 
-## `tsibble` objects
+To handle this dependency and make forecasting efficient and error-free, the R community has developed a specialized ecosystem of packages collectively known as the **`fable` framework**.
 
-The easiest way to handle time series data in R is as a `tsibble` object. For example, here is a normal `tibble` of Mr Trump's approval ratings across his current term in office:
+This chapter introduces the four core tools you will use in this course:
+
+1.  **`tsibble`**: The specialized data structure for time series.
+
+2.  **`feasts`**: The toolkit for diagnosing and visualizing time series patterns.
+
+3.  **`fable`**: The engine for fitting models and generating forecasts.
+
+4.  **`ggtime`**: The visual layer for making beautiful time series plots.
+
+## The Foundation: The `tsibble` Object
+
+### Why a `tsibble`?
+
+A standard `tibble` or `data.frame` treats columns like `date` or `week` as just text or numbers. A `tsibble` (Time Series Tibble) is a *smart* data structure. It forces you to define **what** is being measured and **when** it was measured. It automatically flags missing time points, helps manage multiple concurrent time series, and ensures your models treat the data's time dependency correctly.
+
+### Indexes and Keys: The DNA of a `tsibble`
+
+Every `tsibble` has two defining features:
+
+#### The Index (The *When*)
+
+The index is the column that specifies the time point of the observation. The `tsibble` package provides several helper functions to convert standard dates/times into time-aware indices:
+
+| Frequency     | Function        | Example                |
+|---------------|-----------------|------------------------|
+| **Yearly**    | `year()`        | `year(2025)`           |
+| **Quarterly** | `yearquarter()` | `yearquarter(2025 Q3)` |
+| **Monthly**   | `yearmonth()`   | `yearmonth(2025 Oct)`  |
+| **Weekly**    | `yearweek()`    | `yearweek(2025 W42)`   |
+
+Let's use the provided political science data to demonstrate. We convert the `date` column into a weekly index using `yearweek()` and then convert the entire `tibble` into a `tsibble`.
 
 ```{r}
+# Load a standard tibble of Mr. Trump's approval ratings
 trump_approval <- read_rds(here::here("data", "trump_approval.rds"))
 trump_approval
 ```
 
-These data are actually collected on a weekly basis by YouGov on behalf of *The Economist*. Although they have very good coverage, they do miss some weeks. It is difficult to see that these are weekly data and where our coverage is missing in this current format.
-
-So, let's convert it to a `tsibble`:
-
 ```{r}
+# Convert it to a tsibble, setting the index explicitly
 trump_approval_ts <- trump_approval |> 
   mutate(date = yearweek(date)) |> 
   as_tsibble()
@@ -34,98 +65,154 @@ trump_approval_ts <- trump_approval |>
 trump_approval_ts
 ```
 
-Much better! The `tsibble` handles the "timing" of it all much more nicely than a standard `tibble`. By converting the `date` column to weekly data using the `yearweek()` function and the data set itself into a `tsibble` object, I have ensured that any visualizations or models I build using these data will be treated appropriately.
+Notice how the `tsibble` output clearly labels `date` as the **Index** and immediately tells us the data is collected weekly.
 
-### Indexes
+#### The Key (The What)
 
-The column that records the time of your observations is referred to as the `index`. `as_tibble()` will often do a good job of guessing which column should be treated as your index, but you can specify it directly using the `index` argument. For examle:
+In many forecasting projects, you deal with multiple, independent time series simultaneously (e.g., all 30 NBA teams, or all 50 US states). The Key is the column that identifies which individual series each observation belongs to.
 
-```{r}
-trump_approval |> 
-  mutate(date = yearweek(date)) |> 
-  as_tibble(index = date)
-```
-
-`tsibble` objects can handle many different frequencies:
+The Australian Football League (AFL) data provides a great example. We want to track 18 different teams over the season's 25 rounds.
 
 ```{r}
-#| echo: false
-
-tibble(Frequency = c("Yearly", "Quarterly", "Monthly", "Weekly", "Daily", 
-                     "Sub-daily"),
-       Function = c("`year()`", "`yearquarter()`", "`yearmonth()`", 
-                    "`yearweek()`", "See: `as_date()`", "See `as_datetime()`")) |> 
-  knitr::kable()
-```
-
-### Keys
-
-`tsibble` objects are also very good at handling multiple groups within your data. For example, you might have data on all teams in a league. It can be useful to group those data by team.
-
-Below is data on each AFL team's performance throughout the 2024 season. For example, we have data on their position in the ladder throughout the season (`ladder_position`), the cumulative number of points they have scored (`score_for`) and have had scored against them (`score_against`).
-
-There were 25 rounds in the regular season (excluding finals). Those rounds are my `index`. I want to track each team's performance across the season. Therefore, my `key` is the team.
-
-```{r}
+# Load data on each AFL team's performance
 afl_ladder <- read_rds(here::here("data", "afl_ladder.rds"))
 
-afl_ladder_ts <- as_tsibble(afl_ladder, key = team, index = round_number)
+# Convert to a tsibble, defining 'team' as the key and 'round_number' as the index
+afl_ladder_ts <- afl_ladder |> 
+  as_tsibble(key = team, index = round_number)
+
 afl_ladder_ts
 ```
 
-Notice that the `tsibble` object prints my key above the the data set. It recognizes that there are 18 different groups (teams) in my key. I now have 18 different time series (each team's performance across the season) stored in one convenient data set. I can look at overall trends and compare the 18 different teams' performance easily.
+The output now shows `Key: team [18]`, meaning we have 18 unique time series bundled together. This allows us to run one single model command to fit 18 separate models—one for each team!
 
-### Working with `tsibble` objects
+## Visualizing and Diagnosing: `feasts` and `ggtime`
 
-On a `tsibble`, we can use all of the functions that you can use on a normal `tibble` or `data.frame` object. They are set up with the `tidyverse` in mind, so functions in that family work seamlessly.
+Before modeling, you must understand the pattern of your data. The `feasts` package (Feature Extraction and Statistics for Time Series) and the `ggtime` extension for `ggplot2` make this diagnosis easy. **We'll cover the interpretation of these plots and models in depth later; for now, focus on running the code to see what tools are available.**
 
-For example, I can filter my data set of Mr Trump's approval rating to look only at his approval in weeks five to 10 of his current term[^03_time_series_r-1]:
+### Visualization with `autoplot` and `ggtime`
 
-[^03_time_series_r-1]: The poll only started after his fifth week in office.
-
-```{r}
-filter(trump_approval_ts, date <= yearweek("2025 W10"))
-```
-
-I can also quickly calculate Mr Trump's average approval rating across his term in office:
-
-```{r}
-summarise(trump_approval_ts, avg_approve = mean(approve))
-```
-
-## Plotting your time series data
-
-Patterns in our data are often most easily detected when we visualize them. The simplest plot to start with is a time series plot. The `ggtime` R package provides a series of functions that make visualizing time series data simple.
-
-For example, @fig-trump-approval shows Mr Trump's approval ratings across his current term.
+The `autoplot()` function, adapted from `ggtime`, is the quickest way to visualize a `tsibble`.
 
 ```{r}
 #| label: fig-trump-approval
 #| fig-cap: "Mr Trump's approval ratings since entering his second term in office."
 
-autoplot(trump_approval_ts) + 
+autoplot(trump_approval_ts, approve) + 
   theme_minimal() + 
-  labs(x = "Date",
-       y = "Approval rating (%)",
-       caption = "Data source: The Economist/YouGov") + 
+  labs(title = "Trump Approval Rating",
+       x = "Date",
+       y = "Approval rating (%)") + 
   scale_y_continuous(limits = c(0, 100))
 ```
 
-We can see that Mr Trump's popularity is declining. In fact, he has not yet enjoyed more than 50 percent of the US voting public's approval.
+This plot immediately reveals the central trend: a declining trajectory.
 
-### Plotting grouped data
-
-We can also plot grouped data to more easily make comparisons between them. For example, @fig-afl-ladder plots each of the 18 AFL teams' score percentages across the 2024 season. Some teams, including long-suffering North Melbourne, never managed to score more points than they conceded. Other teams, including the Sydney Swans, managed to never dip below 100 percent.
+When dealing with grouped data (like the AFL teams), `autoplot` automatically plots every series, making comparisons easy:
 
 ```{r}
-#| label: fig-afl-ladder
+#| label: fig-afl-ladder-percentage
 #| fig-cap: "AFL teams' score percentage across the 2024 regular season."
 
 autoplot(afl_ladder_ts, percentage) + 
-  geom_hline(yintercept = 1, linetype = "dashed") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red", alpha = 0.6) +
   theme_minimal() + 
-  labs(x = "Round",
-       y = "Scoring percentage",
-       caption = "Data source: AFL Tables") + 
-  scale_y_continuous(labels = scales::percent)
+  labs(title = "AFL Team Score Percentage Over 2024 Season",
+       x = "Round",
+       y = "Scoring Percentage (For / Against)") + 
+  scale_y_continuous(labels = scales::percent_format(scale = 1))
 ```
+
+The plot shows 18 individual lines, allowing us to immediately see which teams (like the Sydney Swans, consistently above 100%) were successful and which (like North Melbourne, consistently below 100%) struggled.
+
+### Diagnostic Tools with `feasts`
+
+The most critical diagnostic plot in time series is the **Seasonal Plot** and the **ACF (Autocorrelation Function) Plot**.
+
+-   **Autocorrelation Function (`ACF`)**: This plot tells you how correlated the variable is with its past values (lags). If the approval rating today is highly correlated with the approval rating 5 weeks ago, the ACF plot will show a strong spike at "Lag 5". This helps us identify hidden dependencies and seasonality.
+
+```{r}
+# Use ACF to check for dependencies
+trump_approval_ts |> 
+  ACF(approve) |> # Calculate the AutoCorrelation Function
+  autoplot() +
+  labs(title = "Autocorrelation in Trump Approval Rating",
+       subtitle = "High correlation means past values influence current values.")
+```
+
+The initial spikes in the ACF plot tell us that approval ratings are highly correlated with the immediately preceding weeks, which is expected.
+
+-   **Decomposition**: Many series have a **Trend** (the long-term movement), a **Seasonality** (a repeating, predictable pattern, like higher sales in December), and a **Remainder** (the random noise). The `feasts` function `model` (which uses `decomposition_model`) helps separate these components, which is essential for accurate modeling.
+
+Let's use the `model` function with `STL()` (Seasonal and Trend decomposition using Loess) to visualize these components:
+
+```{r}
+# Decompose the time series into its components
+trump_approval_ts |> 
+  model(
+    decomposition = STL(approve) # Use STL to separate trend, seasonality, and remainder
+  ) |> 
+  components() |> # Extract the components
+  autoplot() +
+  labs(title = "Decomposition of Trump Approval Rating")
+```
+
+The resulting plot shows four panels: the original observed data, the estimated Trend (the smooth, long-term movement), the Seasonal component (the weekly pattern, if any), and the Remainder (the residual noise not explained by trend or seasonality).
+
+## The Engine: The `fable` Package
+
+The `fable` package is the core modeling engine. It uses a clean, three-step pipeline that aligns perfectly with the `tidyverse` philosophy: **`model()` -\> `forecast()` -\> `autoplot()`**. **Like decomposition, we will dive deep into specific forecasting models later. For now, focus on the workflow—how to fit a model, generate a forecast, and visualize the result.**
+
+### Step 1: `model()` - Fitting the Model
+
+The `model()` function takes a `tsibble` and specifies the model(s) you want to fit using a formula. The output is a special **`mable`** (Model Table) object.
+
+We can fit the simple linear trend model we saw in the last chapter using the `TSLM()` (Time Series Linear Model) function:
+
+```{r}
+fit_approval <- trump_approval_ts |> 
+  model(
+    linear_trend = TSLM(approve ~ trend()),
+    # We can fit multiple models at once!
+    mean_model = MEAN(approve)
+  )
+
+fit_approval
+```
+
+The `mable` object now holds two fully trained models ready for forecasting.
+
+### Step 2: `forecast()` - Generating Predictions
+
+The `forecast()` function takes the `mable` object and tells it how far into the future (the **horizon,** or `h`) to predict.
+
+```{r}
+# Forecast approval ratings 5 weeks into the future
+approval_forecast <- fit_approval |> 
+  forecast(h = "5 weeks")
+
+approval_forecast
+```
+
+The output is a **`fable`** object (Forecast Table). Notice it provides the `.mean` (the point estimate) and a distribution for the prediction, allowing us to calculate the **Prediction Interval** (the range of plausible future values).
+
+### Step 3: `autoplot()` - Visualizing the Forecast
+
+Finally, we plot the forecast using the original data and the `autoplot()` function.
+
+```{r}
+#| label: fig-approval-forecast-combined
+#| fig-cap: "Observed approval ratings with a 5-week forecast from two different models."
+
+# Plotting the forecast table automatically includes the original data
+approval_forecast |> 
+  autoplot(trump_approval_ts, level = 80) + # Show an 80% prediction interval
+  theme_minimal() + 
+  labs(title = "Trump Approval Forecast: Linear Trend vs. Historical Mean",
+       x = "Date",
+       y = "Approval rating (%)")
+```
+
+The resulting plot clearly shows the declining linear trend model and the flat line of the historical mean model, along with their respective 80% uncertainty cones (the shaded region). This visual comparison is the most powerful way to evaluate your models before deployment.
+
+By mastering the `tsibble`, `feasts`, and `fable` pipeline, you gain a robust, modern, and efficient set of tools to tackle nearly any time series forecasting challenge, whether in political science or sports analytics.

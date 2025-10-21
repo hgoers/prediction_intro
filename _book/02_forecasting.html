@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; Introduction to Forecasting – From Polls to Playoffs: The Science of Prediction</title>
+<title>2&nbsp; The Forecasting Landscape – From Polls to Playoffs: The Science of Prediction</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -82,7 +82,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02_forecasting.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to Forecasting</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02_forecasting.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Forecasting Landscape</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -122,7 +122,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02_forecasting.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to Forecasting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Forecasting Landscape</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -135,12 +135,6 @@ ul.task-list li input[type="checkbox"] {
   <div class="sidebar-item-container"> 
   <a href="./04_time_series_decomposed.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Finding Patterns Over Time</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./05_time_series_forecasts.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Time Series Regression Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -159,8 +153,25 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#what-can-be-forecasted" id="toc-what-can-be-forecasted" class="nav-link active" data-scroll-target="#what-can-be-forecasted"><span class="header-section-number">2.1</span> What can be forecasted?</a></li>
-  <li><a href="#the-statistics-of-forecasting" id="toc-the-statistics-of-forecasting" class="nav-link" data-scroll-target="#the-statistics-of-forecasting"><span class="header-section-number">2.2</span> The statistics of forecasting</a></li>
+  <li><a href="#what-can-be-forecast" id="toc-what-can-be-forecast" class="nav-link active" data-scroll-target="#what-can-be-forecast"><span class="header-section-number">2.1</span> What Can Be Forecast?</a>
+  <ul class="collapse">
+  <li><a href="#the-quantifiable-world" id="toc-the-quantifiable-world" class="nav-link" data-scroll-target="#the-quantifiable-world"><span class="header-section-number">2.1.1</span> The Quantifiable World</a></li>
+  </ul></li>
+  <li><a href="#goals-and-time-horizons" id="toc-goals-and-time-horizons" class="nav-link" data-scroll-target="#goals-and-time-horizons"><span class="header-section-number">2.2</span> Goals and Time Horizons</a>
+  <ul class="collapse">
+  <li><a href="#defining-the-time-horizon" id="toc-defining-the-time-horizon" class="nav-link" data-scroll-target="#defining-the-time-horizon"><span class="header-section-number">2.2.1</span> Defining the Time Horizon</a></li>
+  <li><a href="#prediction-vs.-explanation" id="toc-prediction-vs.-explanation" class="nav-link" data-scroll-target="#prediction-vs.-explanation"><span class="header-section-number">2.2.2</span> Prediction vs.&nbsp;Explanation</a></li>
+  </ul></li>
+  <li><a href="#data-and-methods" id="toc-data-and-methods" class="nav-link" data-scroll-target="#data-and-methods"><span class="header-section-number">2.3</span> Data and Methods</a>
+  <ul class="collapse">
+  <li><a href="#the-data-foundation-time-series" id="toc-the-data-foundation-time-series" class="nav-link" data-scroll-target="#the-data-foundation-time-series"><span class="header-section-number">2.3.1</span> The Data Foundation: Time Series</a></li>
+  <li><a href="#core-forecasting-methods" id="toc-core-forecasting-methods" class="nav-link" data-scroll-target="#core-forecasting-methods"><span class="header-section-number">2.3.2</span> Core Forecasting Methods</a></li>
+  </ul></li>
+  <li><a href="#case-studies-in-predictive-power" id="toc-case-studies-in-predictive-power" class="nav-link" data-scroll-target="#case-studies-in-predictive-power"><span class="header-section-number">2.4</span> Case Studies in Predictive Power</a>
+  <ul class="collapse">
+  <li><a href="#political-science---election-forecasting" id="toc-political-science---election-forecasting" class="nav-link" data-scroll-target="#political-science---election-forecasting"><span class="header-section-number">2.4.1</span> Political Science - Election Forecasting</a></li>
+  <li><a href="#sports-analytics---expected-goals-xg" id="toc-sports-analytics---expected-goals-xg" class="nav-link" data-scroll-target="#sports-analytics---expected-goals-xg"><span class="header-section-number">2.4.2</span> Sports Analytics - Expected Goals (xG)</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -169,7 +180,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to Forecasting</span></h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Forecasting Landscape</span></h1>
 </div>
 
 
@@ -186,13 +197,118 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="what-can-be-forecasted" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="what-can-be-forecasted"><span class="header-section-number">2.1</span> What can be forecasted?</h2>
+<p>Welcome to the world of predictive analytics! If you’ve ever tried to guess who will win the World Series, what the Fed will do with interest rates, or whether a piece of legislation will pass, you’ve been forecasting. The difference is that now, we move from intuition to <strong>structured science</strong>.</p>
+<p>This chapter is designed to broaden your perspective. Forecasting is not just about time series—it’s about applying rigorous statistical methods to nearly any outcome with quantifiable uncertainty. By the end of this module, you will understand the massive scope of modern forecasting, its key terminology, and the foundational role of data in political and sports analysis.</p>
+<section id="what-can-be-forecast" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="what-can-be-forecast"><span class="header-section-number">2.1</span> What Can Be Forecast?</h2>
+<p>Forecasting applies to anything that moves, changes, and is measurable. If you can collect data on it, you can model it, and therefore, you can forecast it. The goal is always to manage uncertainty, not eliminate it.</p>
+<section id="the-quantifiable-world" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="the-quantifiable-world"><span class="header-section-number">2.1.1</span> The Quantifiable World</h3>
+<p>The core requirement for a successful forecasting project is a clear, repeatable, and quantifiable outcome. In political science and sports, this means moving beyond subjective judgment and focusing on the numbers:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Quantifiable Outcomes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Political Science</strong></td>
+<td>Election vote shares, presidential approval ratings, duration of wars/conflicts, legislative success rates (e.g., probability of a bill passing), economic indicators (GDP growth, unemployment).</td>
+</tr>
+<tr class="even">
+<td><strong>Sports Analytics</strong></td>
+<td>Game outcomes (win/loss probability), player performance metrics (e.g., Expected Goals, next season’s home runs), injury likelihood, fantasy points scored, and betting line movements.</td>
+</tr>
+</tbody>
+</table>
+<p>These fields are data-rich laboratories, making them perfect for learning predictive modeling.</p>
 </section>
-<section id="the-statistics-of-forecasting" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="the-statistics-of-forecasting"><span class="header-section-number">2.2</span> The statistics of forecasting</h2>
+</section>
+<section id="goals-and-time-horizons" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="goals-and-time-horizons"><span class="header-section-number">2.2</span> Goals and Time Horizons</h2>
+<p>In forecasting, the “when” and “why” are just as important as the “what.” Every project requires defining your <strong>time horizon</strong> and clarifying whether your primary <strong>goal</strong> is pure prediction or deeper understanding.</p>
+<section id="defining-the-time-horizon" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="defining-the-time-horizon"><span class="header-section-number">2.2.1</span> Defining the Time Horizon</h3>
+<p>The time frame of your forecast drastically changes the model you should use.</p>
+<ul>
+<li><p><strong>Short-Term Forecasts (Hours/Days/Weeks):</strong> These focus on immediate dynamics and momentum. Examples include predicting the minute-by-minute movement of a stock price, or, in sports, calculating the <strong>Expected Points Added (EPA)</strong> for the very next play in an NFL game. These forecasts rely heavily on the <em>very recent</em> past and high-frequency data.</p></li>
+<li><p><strong>Medium-Term Forecasts (Months/Quarters):</strong> This is the sweet spot for many political and economic forecasts. Predicting the President’s approval rating over the next three months or a team’s win total over a season requires capturing trends and known seasonal/cyclical factors.</p></li>
+<li><p><strong>Long-Term Forecasts (Years/Decades):</strong> These are the most challenging and least certain. They involve structural models, like predicting the outcome of the next US presidential election a year in advance, or projecting the career arc and future salary of a rookie basketball player. Here, major structural variables (like demographic changes or economic recessions) matter more than daily noise.</p></li>
+</ul>
+</section>
+<section id="prediction-vs.-explanation" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="prediction-vs.-explanation"><span class="header-section-number">2.2.2</span> Prediction vs.&nbsp;Explanation</h3>
+<p>Forecasting models serve two primary goals:</p>
+<ol type="1">
+<li><p><strong>Pure Prediction:</strong> This goal is focused solely on <strong>accuracy</strong>. If a complex, black-box machine learning model gives you the most accurate vote-share prediction, you use it, even if you can’t explain <em>why</em> it chose that number. This is often the goal of prediction markets or betting exchanges.</p></li>
+<li><p><strong>Explanation (Causality):</strong> This goal focuses on <strong>understanding</strong>. You might accept a slightly less accurate model if it clearly tells you that “a one percentage point change in GDP growth leads to a two percentage point increase in incumbent vote share.” Political scientists often prioritize these explanatory models to test and advance theory.</p></li>
+</ol>
+<p>A great forecaster knows the difference and selects the right model for the job.</p>
+</section>
+</section>
+<section id="data-and-methods" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="data-and-methods"><span class="header-section-number">2.3</span> Data and Methods</h2>
+<p>At the heart of every good forecast is robust data and a carefully chosen mathematical technique. In this course, we will primarily use the <strong>tidyverse</strong> ecosystem in R, a set of tools designed for clean, reproducible data science.</p>
+<section id="the-data-foundation-time-series" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="the-data-foundation-time-series"><span class="header-section-number">2.3.1</span> The Data Foundation: Time Series</h3>
+<p>Our focus is on <strong>time series data</strong> , where data points are ordered and dependent on the past. To handle this, we use the <code>tsibble</code> object, which is like a smart spreadsheet that remembers the sequence.</p>
+</section>
+<section id="core-forecasting-methods" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="core-forecasting-methods"><span class="header-section-number">2.3.2</span> Core Forecasting Methods</h3>
+<p>While we’ll cover many methods in depth, most fall into a few categories:</p>
+<ul>
+<li><p><strong>Regression Models (The Storytellers):</strong> These establish linear or non-linear relationships between variables. The simple <strong>Linear Trend Model</strong> we saw in the previous chapter assumes the future is a straight-line continuation of the past. More complex regression models (like those used for election forecasting) include dozens of predictors, such as economic growth, presidential approval, and partisan affiliation, to predict the final vote share.</p></li>
+<li><p><strong>Smoothing and Decomposition (The Cleaners):</strong> Methods like simple exponential smoothing or STL decomposition help us strip away the noise and random variation to reveal the pure, underlying trend and any seasonal patterns. This is often the first step in modeling data with strong, predictable cycles (like retail sales or airline traffic).</p></li>
+<li><p><strong>Machine Learning (The Optimizers):</strong> Advanced techniques like neural networks and Random Forests excel at finding complex, non-linear relationships in massive datasets. These are often used in sports to predict player movement or tactical outcomes where the interactions are too intricate for simple regression.</p></li>
+</ul>
+</section>
+</section>
+<section id="case-studies-in-predictive-power" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="case-studies-in-predictive-power"><span class="header-section-number">2.4</span> Case Studies in Predictive Power</h2>
+<p>Let’s look at two high-stakes areas where forecasting has fundamentally changed the conversation.</p>
+<section id="political-science---election-forecasting" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="political-science---election-forecasting"><span class="header-section-number">2.4.1</span> Political Science - Election Forecasting</h3>
+<p>One of the most popular and scrutinized areas of political forecasting is predicting US presidential elections. Early models often relied on just two to three variables, reflecting the core explanatory goal: for example, the economy and the incumbent’s standing.</p>
+<section id="the-fundamentals-model" class="level4" data-number="2.4.1.1">
+<h4 data-number="2.4.1.1" class="anchored" data-anchor-id="the-fundamentals-model"><span class="header-section-number">2.4.1.1</span> <strong>The “Fundamentals” Model</strong></h4>
+<p>Political scientists discovered that the election outcome, when predicted months in advance, is largely determined by the <strong>fundamentals</strong>: the state of the economy (GDP growth, job numbers) and whether the country feels it’s “time for a change.” These models, despite their simplicity, consistently outperform early public polls because they recognize that voters haven’t fully focused on the race yet, but the underlying conditions are already set.</p>
+</section>
+<section id="the-polling-aggregation-model" class="level4" data-number="2.4.1.2">
+<h4 data-number="2.4.1.2" class="anchored" data-anchor-id="the-polling-aggregation-model"><span class="header-section-number">2.4.1.2</span> <strong>The Polling Aggregation Model</strong></h4>
+<p>As Election Day nears, the best forecasts shift to incorporating hundreds or thousands of public opinion polls, weighted by quality, recency, and sample size. This is what sites like FiveThirtyEight popularized. Here, the challenge is no longer about finding the <em>causes</em> of the vote, but about accurately estimating the current <em>state</em> of the vote and managing the uncertainty of who will actually turn out.</p>
+</section>
+</section>
+<section id="sports-analytics---expected-goals-xg" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="sports-analytics---expected-goals-xg"><span class="header-section-number">2.4.2</span> Sports Analytics - Expected Goals (xG)</h3>
+<p>Sports analytics, often called the “Moneyball” revolution, is a hotbed of predictive modeling. Consider the metric <strong>Expected Goals (xG)</strong> in soccer.</p>
+<p>Before xG, a missed shot was just a “miss.” Now, we ask: how likely was that shot to be a goal?</p>
+<section id="the-xg-methodology" class="level4" data-number="2.4.2.1">
+<h4 data-number="2.4.2.1" class="anchored" data-anchor-id="the-xg-methodology"><span class="header-section-number">2.4.2.1</span> <strong>The xG Methodology</strong></h4>
+<p>xG is a predictive model (often a logistic regression or machine learning model) trained on thousands of shots. For any new shot, it calculates the probability that the shot will result in a goal based on historical data. The variables in the model are factors like:</p>
+<ul>
+<li><p>Distance to the goal</p></li>
+<li><p>Angle to the goal</p></li>
+<li><p>Type of pass that created the opportunity</p></li>
+<li><p>Whether it was a “big chance” or a header</p></li>
+<li><p>How many defenders were between the shooter and the goal</p></li>
+</ul>
+<p>If a player takes a shot that has a 0.5 (50%) chance of being a goal, their xG increases by 0.5, regardless of whether the shot actually goes in. Teams use xG to forecast:</p>
+<ol type="1">
+<li><p><strong>Sustainable Performance:</strong> Is a team scoring more goals than their xG suggests? If so, they are likely to regress (score less) in the future.</p></li>
+<li><p><strong>Tactical Efficiency:</strong> Where on the field are we creating the highest xG chances? This helps inform in-game and transfer market decisions.</p></li>
+</ol>
+<p>The xG metric perfectly demonstrates how forecasting models don’t just predict the final score; they help managers understand the underlying quality and consistency of performance, managing the uncertainty of luck and randomness inherent in any single game.</p>
+<p>Throughout this course, you will build the skills to tackle predictive problems just like these, moving from simple trend-based models to complex, variable-rich analytical tools.</p>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

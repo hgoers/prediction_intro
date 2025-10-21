@@ -20,28 +20,193 @@ This chapter introduces time series regression models.
 
 ## Linear regression models
 
-To begin, we will focus on linear regression models. These models assume that the predicted effect of a change in our predictor on the outcome is the same no matter the value of the predictor. For example, we assume that a country's GDP will grow at the same rate across all years.
+To begin, we will focus on linear regression models. These models assume that the effect of a change in our predictor on the outcome is the same across all values of the predictor. 
 
-This is a stringent assumption, but there are many cases where it is appropriate. If you are lucky enough to be modelling something with a linear relationship, you get to use a model that is intuative and (relatively) easy to interpret. The upside is large.
+Let's introduce this model with one such linear relationship. We are going to look at the relationship between baseball teams' winning percentage and their run differential. 
 
-Let's introduce this model with one such example of a linear relationship. We are going to look at the relationship between baseball teams' winning percentage and their run differential.
+::: {.callout-note}
+A team's winning percentage is the proportion of games that win. For example, if a team wins six of the 10 games they have played, their winning percentage is 60 percent. 
 
-A team's winning percentage is simply the proportion of games that win. For example, if a team wins six of the 10 games they have played, their winning percentage is 60 percent. Their run differential is the difference between the number of runs they score and concede. So if a team makes 12 runs but their opponent scores 16, their run differential will be -4.
+Their run differential is the difference between the number of runs they score and concede. So if a team makes 12 runs but their opponent scores 16, their run differential will be -4.
+:::
 
-Let's take a look at this relationship across all teams' seasons from 2005:
+Let's take a look at this relationship across all MBL teams' seasons from 2000:
 
 ```{r}
 Teams |> 
-  filter(yearID >= 2005) |> 
+  filter(yearID >= 2000) |> 
   transmute(yearID, teamID, RD = R - RA, WPct = W / G) |> 
   as_tsibble(index = yearID, key = teamID) |> 
   ggplot(aes(x = RD, y = WPct)) + 
   geom_point()
 ```
 
-That's a strong positive relationship. Teams with a high run differential tended to win most of their games. Teams with a low differential tended to lose. In general, this relationship looks linear: I could draw a straight line through those dots and capture the general trend within them very well.
+That's a strong positive relationship. Teams with a high run differential tended to win a lot of their games. Teams with a low differential tended to lose their games. In general, this relationship looks linear: I could draw a straight line through those dots and capture the general trend within them very well.
 
-So, we're going to assume the relationship is linear and we can, therefore, model it using linear regression. To do this, we are going to focus on one team: my sweet, beleaguered Nats. Let's look at their performance since entering the league in their current form in 2005:
+So, we're going to assume the relationship is linear and we can, therefore, model it using linear regression. Before we do so with real-world data, I am going to demonstrate how the model works using fake data. That allows us to know the true underlying relationship. 
+
+I am now going to create a performance record for a fake team -- the Atlantis Tritons -- across all seasons from 2000 to 2024. Their run differential will be randomly selected from a the distribution $N(0, 130)$: 
+
+```{r}
+#| echo: false
+
+ggplot() + 
+  geom_density(aes(x = rnorm(1e6, 0, 130)))
+```
+
+Their win percentage is a function of that season's run differential: 
+
+$$
+WPct_t = 50 + 0.005RD_t + \epsilon_t
+$$
+
+So, for each extra run the Atlantis Tritons gain over their opponents, their win percentage increases by 0.005 percentage points. A run differential of 100 points means the Tritons will win 55 percent of their games played that season. There is some random error attached to that, which follows the distribution $N(0, 0.25)$. 
+
+Let's simulate 25 seasons of baseball that follow these patterns: 
+
+```{r}
+set.seed(1234)
+
+tritons_ts <- tsibble(
+  year = 2000:2024,
+  RD = rnorm(25, mean = 0, sd = 130),
+  index = year
+) |> 
+  mutate(WPct = 50 + 0.005*RD + rnorm(25, 0, 0.25))
+
+tritons_ts
+```
+
+Let's look at this relationship: 
+
+```{r}
+ggplot(tritons_ts, aes(x = RD, y = WPct)) + 
+  geom_point()
+```
+
+(By design) we have a linear relationship. It appears that in the seasons when the Atlantis Tritons score large run differentials, they won a large proportion of their games. Conversely, the seasons they conceded more runs to their opponents than they scored, they lost a large proportion of their games. Knowing whether the Tritons had a large or small run differential in a given seasons would help us predict their win percentage. 
+
+We can model that using linear least squares regression:
+
+```{r}
+tritons_m <- model(tritons_ts, TSLM(WPct ~ RD))
+
+report(tritons_m)
+```
+
+The estimates we got are very close to the true relationship. The win percentage is roughly equal to the true value of an average of 50 (`r tidy(tritons_m) |> filter(term == "(Intercept)") |> pull(estimate) |> round(1)`) percent when the run differential is equal to zero. For each additional run the team score over their opponents in a given season, the win percentage increases by roughly 0.005 (`r tidy(tritons_m) |> filter(term == "RD") |> pull(estimate) |> round(4)`) percentage points, on average. 
+
+::: {.callout-note}
+The less precise the underlying relationship, the more likely we are to get estimates for those values that are different from the true underlying value. This makes sense: a lot of random noise makes it hard to pin down the general relationship between our predictor and outcome. 
+:::
+
+## Is this a good model?
+
+An intuitive measure of a model's performance is how well it fits the data we have. How far do our predicted values sit from their observed counterparts? This difference is known as the **training-set errors** or **residuals**. 
+
+Let's visualize this relationship over time: 
+
+```{r}
+augment(tritons_m) |> 
+  ggplot(aes(x = year)) +
+  geom_line(aes(y = WPct), colour = "lightgrey") + 
+  geom_line(aes(y = .fitted), colour = "darkred") + 
+  theme_minimal()
+```
+
+We seem to have done a good job of predicting (red) the true win percent (grey) using run differentials. There are some differences between the two, but they look small. We can calculate them using `broom::augment()`: 
+
+```{r}
+augment(tritons_m) |> 
+  select(year:.resid) |> 
+  knitr::kable()
+```
+
+Those errors should resemble the distribution I set up of $N(0, 0.25)$. Let's take a look at them: 
+
+```{r}
+ggplot() + 
+  geom_density(aes(x = augment(tritons_m)$.resid), fill = "darkred", alpha = 0.5) + 
+  geom_density(aes(x = rnorm(1e6, 0, 0.25)))
+```
+
+Pretty close! Remember, we are only modelling 25 seasons. These errors are Normally distributed and centered at zero. This means that, on average, our model is correct: there is no difference between the predicted and observed values. 
+
+### Adding time into the equation
+
+Currently, the team's run differential in year $t$ is independent of their run differential in any other year. We are, therefore, totally fine to model the relationship between this predictor and our outcome without accounting for time. 
+
+However, this is not the case for many time-series, including in baseball. A team's performance in any given season tends to be related to their performance in the last season. Let's adjust our fake data for the Atlantis Tritons to mimic this tendency. 
+
+```{r}
+tritons_time_ts <- tsibble(
+  year = 2000:2024,
+  RD = rnorm(1, mean = 0, sd = 130),
+  index = year
+) |> 
+  mutate(RD = if_else(year == min(year),
+                      RD,
+                      lag(RD) + rnorm(24, mean = 0, sd = 130)),
+         WPct = 50 + 0.005*RD + rnorm(25, 0, 0.25))
+```
+
+The linear relationship still holds: 
+
+```{r}
+ggplot(tritons_time_ts, aes(x = RD, y = WPct)) + 
+  geom_point()
+```
+
+```{r}
+augment(tritons_m) |> 
+  ggplot(aes(x = year)) +
+  geom_line(aes(y = WPct), colour = "steelblue") + 
+  theme_minimal()
+```
+
+```{r}
+tritons_time_m <- model(tritons_time_ts, TSLM(WPct ~ RD))
+
+report(tritons_time_m)
+```
+
+With time-series data, the value of your variable at time $t$ is probably very similar to its value at time $t-1$. Therefore, when fitting a regression model to time-series data, it is common to find autocorrelation in the residuals.  In this case, the estimated model violates the assumption of no autocorrelation in the errors. While the forecasts are not wrong, their prediction intervals can be larger than they need to be. 
+
+```{r}
+gg_tsresiduals(tritons_m)
+```
+
+The time plot shows changing variation over time. This heteroscedasticity will potentially make the prediction interval coverage inaccurate.
+
+The autocorrelation plot shows no significant spikes. It is unlikely to have any noticeable impact on the forecasts or the prediction intervals. 
+
+Our residuals are skewed to the left, which may also affect the coverage probability of the prediction intervals.
+
+We would expect the residuals to be randomly scattered without showing any systematic patterns. A simple and quick way to check this is to examine scatterplots of the residuals against each of the predictor variables. If these scatterplots show a pattern, then the relationship may be non-linear and the model will need to be modified accordingly. 
+
+Happily, ours shows no pattern: 
+
+```{r}
+augment(nats_m) |> 
+  left_join(nats_ts, by = join_by(yearID, WPct)) |> 
+  ggplot(aes(x = RD, y = .resid)) + 
+  geom_point() + 
+  labs(x = "Run differential", y = "Residuals")
+```
+
+You should also plot your residuals against your fitted values to see if a pattern exists. If there is a pattern, there may be **heteroscedasticity** in the errors. This means that the variance of the residuals may not be constant. Happily again, no pattern exists: 
+
+```{r}
+augment(nats_m) |> 
+  ggplot(aes(x = .fitted, y = .resid)) + 
+  geom_point() + 
+  labs(x = "Fitted", y = "Residuals")
+```
+
+
+## The Nats performance
+
+To do this, we are going to focus on one team: my sweet, beleaguered Nats. Let's look at their performance since entering the league in their current form in 2005:
 
 ```{r}
 nats_ts <- Teams |> 
@@ -71,13 +236,6 @@ nats_m <- model(nats_ts, TSLM(WPct ~ RD))
 report(nats_m)
 ```
 
-::: {.callout-note collapse="TRUE"}
-Note, this is equivalent to running:
-
-```{r}
-lm(WPct ~ RD, data = nats_ts)
-```
-:::
 
 ```{r}
 intercept_coef <- tidy(nats_m) |> 
@@ -112,39 +270,4 @@ augment(nats_m) |>
   theme_minimal()
 ```
 
-## Is this a good model?
 
-The differences between our predicted values and the ones that happened in the real world are known as the **training-set errors** or **residuals**. 
-
-With time-series data, the value of your variable at time $t$ is probably very similar to its value at time $t-1$. Therefore, when fitting a regression model to time-series data, it is common to find autocorrelation in the residuals.  In this case, the estimated model violates the assumption of no autocorrelation in the errors. While the forecasts are not wrong, their prediction intervals can be larger than they need to be. 
-
-```{r}
-gg_tsresiduals(nats_m)
-```
-
-The time plot shows changing variation over time. This heteroscedasticity will potentially make the prediction interval coverage inaccurate.
-
-The autocorrelation plot shows no significant spikes. It is unlikely to have any noticeable impact on the forecasts or the prediction intervals. 
-
-Our residuals are skewed to the left, which may also affect the coverage probability of the prediction intervals.
-
-We would expect the residuals to be randomly scattered without showing any systematic patterns. A simple and quick way to check this is to examine scatterplots of the residuals against each of the predictor variables. If these scatterplots show a pattern, then the relationship may be non-linear and the model will need to be modified accordingly. 
-
-Happily, ours shows no pattern: 
-
-```{r}
-augment(nats_m) |> 
-  left_join(nats_ts, by = join_by(yearID, WPct)) |> 
-  ggplot(aes(x = RD, y = .resid)) + 
-  geom_point() + 
-  labs(x = "Run differential", y = "Residuals")
-```
-
-You should also plot your residuals against your fitted values to see if a pattern exists. If there is a pattern, there may be **heteroscedasticity** in the errors. This means that the variance of the residuals may not be constant. Happily again, no pattern exists: 
-
-```{r}
-augment(nats_m) |> 
-  ggplot(aes(x = .fitted, y = .resid)) + 
-  geom_point() + 
-  labs(x = "Fitted", y = "Residuals")
-```

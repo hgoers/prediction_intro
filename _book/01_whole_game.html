@@ -174,12 +174,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05_time_series_forecasts.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Time Series Regression Models</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -194,12 +188,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#prepare-your-data" id="toc-prepare-your-data" class="nav-link active" data-scroll-target="#prepare-your-data"><span class="header-section-number">1.1</span> Prepare your data</a></li>
-  <li><a href="#plot-your-data" id="toc-plot-your-data" class="nav-link" data-scroll-target="#plot-your-data"><span class="header-section-number">1.2</span> Plot your data</a></li>
-  <li><a href="#specify-your-model" id="toc-specify-your-model" class="nav-link" data-scroll-target="#specify-your-model"><span class="header-section-number">1.3</span> Specify your model</a></li>
-  <li><a href="#train-your-model" id="toc-train-your-model" class="nav-link" data-scroll-target="#train-your-model"><span class="header-section-number">1.4</span> Train your model</a></li>
-  <li><a href="#evaluate-your-models-performance" id="toc-evaluate-your-models-performance" class="nav-link" data-scroll-target="#evaluate-your-models-performance"><span class="header-section-number">1.5</span> Evaluate your model’s performance</a></li>
-  <li><a href="#forecast" id="toc-forecast" class="nav-link" data-scroll-target="#forecast"><span class="header-section-number">1.6</span> Forecast</a></li>
+  <li><a href="#a-forecasting-roadmap" id="toc-a-forecasting-roadmap" class="nav-link active" data-scroll-target="#a-forecasting-roadmap"><span class="header-section-number">1.1</span> A Forecasting Roadmap</a></li>
+  <li><a href="#our-illustrative-example-the-approval-rating-rollercoaster" id="toc-our-illustrative-example-the-approval-rating-rollercoaster" class="nav-link" data-scroll-target="#our-illustrative-example-the-approval-rating-rollercoaster"><span class="header-section-number">1.2</span> Our Illustrative Example: The Approval Rating Rollercoaster</a></li>
+  <li><a href="#step-1-prepare-your-data" id="toc-step-1-prepare-your-data" class="nav-link" data-scroll-target="#step-1-prepare-your-data"><span class="header-section-number">1.3</span> Step 1: Prepare Your Data</a></li>
+  <li><a href="#step-2-plot-your-data" id="toc-step-2-plot-your-data" class="nav-link" data-scroll-target="#step-2-plot-your-data"><span class="header-section-number">1.4</span> Step 2: Plot your data</a></li>
+  <li><a href="#step-3-specify-your-model" id="toc-step-3-specify-your-model" class="nav-link" data-scroll-target="#step-3-specify-your-model"><span class="header-section-number">1.5</span> Step 3: Specify your model</a></li>
+  <li><a href="#step-4-train-your-model" id="toc-step-4-train-your-model" class="nav-link" data-scroll-target="#step-4-train-your-model"><span class="header-section-number">1.6</span> Step 4: Train your model</a></li>
+  <li><a href="#step-5-evaluate-your-models-performance" id="toc-step-5-evaluate-your-models-performance" class="nav-link" data-scroll-target="#step-5-evaluate-your-models-performance"><span class="header-section-number">1.7</span> Step 5: Evaluate your model’s performance</a></li>
+  <li><a href="#step-6-forecast" id="toc-step-6-forecast" class="nav-link" data-scroll-target="#step-6-forecast"><span class="header-section-number">1.8</span> Step 6: Forecast</a></li>
   </ul>
 </nav>
     </div>
@@ -230,12 +226,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This brief introduction outlines each step you will take to produce your forecasts.</p>
-<p>To illustrate, we will look at Mr Trump’s approval rating across his current term in office. These data are collected on a near-weekly basis by the polling firm YouGov on behalf of <em>The Economist</em>.</p>
-<section id="prepare-your-data" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="prepare-your-data"><span class="header-section-number">1.1</span> Prepare your data</h2>
-<p>You first need to prepare your data for analysis. This can often be the most time-consuming part of your data analysis process. Happily, I have cleaned our data for you.</p>
-<p>The last step in this process is to convert your data set into a <code>tsibble</code> object, which has features that make time-series analysis easier.</p>
+<section id="a-forecasting-roadmap" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="a-forecasting-roadmap"><span class="header-section-number">1.1</span> A Forecasting Roadmap</h2>
+<p>Forecasting is the art and science of predicting the future. In political science, we can use it to better understand elections, the impact of policies, international conflict, and public opinion. In this course, you will learn how to move beyond simple guesswork and create structured, data-driven predictions—a skill invaluable in academia, government, and the private sector.</p>
+<p>Think about the high-stakes world of modern politics. Every campaign manager, pundit, and policy analyst desperately wants to know what will happen next. Will a new policy boost a leader’s popularity? Will a major news event sink a campaign? We can’t know for certain, but we can manage our uncertainty by building powerful statistical models that learn from history.</p>
+<p>This introductory chapter provides a high-level roadmap of the entire forecasting process, from raw data to final prediction. Each step outlined here corresponds to a major topic we will dive into in later chapters. By the end of this course, you will be able to perform this entire process confidently and critique the forecasts you see every day in the news.</p>
+</section>
+<section id="our-illustrative-example-the-approval-rating-rollercoaster" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="our-illustrative-example-the-approval-rating-rollercoaster"><span class="header-section-number">1.2</span> Our Illustrative Example: The Approval Rating Rollercoaster</h2>
+<p>To illustrate the forecasting process, we will look at one of the most dynamic and closely watched metrics in political science: <strong>the current US President’s approval rating across their current term in office.</strong></p>
+<p>A President’s approval rating is not just a vanity metric: it is a critical indicator of political capital, legislative success, and re-election prospects. The data we will use are collected on a near-weekly basis by the polling firm YouGov on behalf of <em>The Economist</em>. It provides the percentage of respondents from a representative sample of the US voting population who approve of President Trump’s performance in office.</p>
+<p>This dataset is a perfect time series example: the data points are ordered in time, and each observation is influenced by the one that came before it. The challenge is clear: given the up-and-down rollercoaster of events, can we predict where the President’s popularity will be next week, next month, or next year?</p>
+</section>
+<section id="step-1-prepare-your-data" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="step-1-prepare-your-data"><span class="header-section-number">1.3</span> Step 1: Prepare Your Data</h2>
+<p>Before any analysis can begin, you must first wrestle your data into a usable format. This step, which often involves cleaning messy spreadsheets, merging different data sources, and handling missing values, is often the most time-consuming part of any data science project.</p>
+<p>In time series analysis, there is a crucial final step: transforming your regular data frame into a special object that can handle <strong>time</strong>. We will use the <code>tsibble</code> object in R. The ‘ts’ stands for “time series.” A <code>tsibble</code> is essentially a smart data frame that knows:</p>
+<ol type="1">
+<li><p><strong>What</strong> the time variable is (e.g., <code>date</code>)</p></li>
+<li><p><strong>How frequently</strong> the data occur (e.g., weekly)</p></li>
+<li><p><strong>In what order</strong> the data should be processed</p></li>
+</ol>
+<p>Without this structure, R simply sees a list of numbers. With it, R sees a chronological history that can be modeled. In this course, we will mostly provide you with clean data, but understanding the importance of the <code>tsibble</code> structure is vital.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>trump_approval <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"trump_approval.rds"</span>)) <span class="sc">|&gt;</span> </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearweek</span>(date)) <span class="sc">|&gt;</span> </span>
@@ -243,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>trump_approval</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tsibble: 36 x 2 [1W]
+<pre><code># A tsibble: 38 x 2 [1W]
        date approve
      &lt;week&gt;   &lt;dbl&gt;
  1 2025 W05      49
@@ -256,13 +268,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  8 2025 W12      45
  9 2025 W13      48
 10 2025 W14      46
-# ℹ 26 more rows</code></pre>
+# ℹ 28 more rows</code></pre>
 </div>
 </div>
 </section>
-<section id="plot-your-data" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="plot-your-data"><span class="header-section-number">1.2</span> Plot your data</h2>
-<p>Next, you should plot your data. This will allow you to get a sense of the overall pattern of your data across time. What is the overall pattern? Do you see any repeated patterns across time? <a href="04_time_series_decomposed.html#fig-trump-approval" class="quarto-xref">Figure&nbsp;<span>4.1</span></a> shows Mr Trump’s approval rating since his first day in office.</p>
+<section id="step-2-plot-your-data" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="step-2-plot-your-data"><span class="header-section-number">1.4</span> Step 2: Plot your data</h2>
+<p>The very first analytical step is always visual: <strong>plot your data</strong>. Your eyes are often the best tool for identifying patterns that statistical formulas might miss. By visualizing the time series, you can better detect three major features:</p>
+<ol type="1">
+<li><p><strong>Trend:</strong> Is the approval rating generally going up, staying flat, or going down over the long run?</p></li>
+<li><p><strong>Seasonality:</strong> Are there patterns that repeat over fixed, known intervals (e.g., does approval always dip during the summer recess or spike after a major national holiday)? In weekly polling data, true seasonality might be rare, but understanding the concept is key for other datasets.</p></li>
+<li><p><strong>Cycles:</strong> Are there longer, non-fixed patterns that don’t repeat at a perfect interval, often linked to the political or economic cycle?</p></li>
+</ol>
+<p>Plotting the data allows you to get an intuitive feel for the <strong>underlying story</strong> your model will try to capture. We call this process Exploratory Data Analysis (EDA), and it is the foundation of selecting an appropriate forecasting model.</p>
+<p><a href="04_time_series_decomposed.html#fig-trump-approval" class="quarto-xref">Figure&nbsp;<span>4.1</span></a> shows Mr Trump’s approval rating since his first day in office. We can see that his approval rating is decreasing over his term in office.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(trump_approval) <span class="sc">+</span> </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
@@ -284,53 +303,100 @@ Figure&nbsp;1.1: Mr Trump’s approval ratings since entering his second term in
 </div>
 </div>
 </section>
-<section id="specify-your-model" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="specify-your-model"><span class="header-section-number">1.3</span> Specify your model</h2>
-<p>Next you need to specify an appropriate model for your data. There are many different models from which you can select. We will discuss several in this course.</p>
-<p>For now, I will select a simple model: a linear trend model (which we will discuss in detail shortly).</p>
+<section id="step-3-specify-your-model" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="step-3-specify-your-model"><span class="header-section-number">1.5</span> Step 3: Specify your model</h2>
+<p>The model specification step is where you formally decide on the <strong>statistical story</strong> you want to tell about your data. A statistical model is a simplified mathematical representation of reality. Since reality is messy, the model abstracts away the noise to focus on the signal—the core pattern.</p>
+<p>In this course, we will explore many different ‘stories’:</p>
+<ul>
+<li><p><strong>Simple Trend Models (like the one below):</strong> The story is that approval ratings change by a fixed, constant amount over time, plus some random, unpredictable noise.</p></li>
+<li><p><strong>Models based on previous values (Autoregressive models):</strong> The story is that the best predictor of today’s approval rating is yesterday’s approval rating.</p></li>
+<li><p><strong>Advanced Models:</strong> Combinations of the above that capture both trend and complex, changing relationships over time.</p></li>
+</ul>
+<p>For this initial demonstration, we will select the most straightforward story: a <strong>linear trend model</strong>. This model assumes that the change in approval rating over time can be represented by a straight line.</p>
 </section>
-<section id="train-your-model" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="train-your-model"><span class="header-section-number">1.4</span> Train your model</h2>
-<p>Next, you need to train your selected model on your data. For example, to train my linear trend model, I will run the following:</p>
+<section id="step-4-train-your-model" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="step-4-train-your-model"><span class="header-section-number">1.6</span> Step 4: Train your model</h2>
+<p>Once you specify your model, you must <strong>train</strong> it. Training is the process of using your historical data (the observed approval ratings) to calculate the precise parameters that make your model’s “story” fit the data and capture that core underlying pattern.</p>
+<p>In the case of our linear trend model, training involves finding the best possible straight line—specifically, calculating the best <strong>starting point (intercept)</strong> and the best <strong>rate of change (slope)</strong> that minimizes the vertical distance between the line and every observed data point.</p>
+<p>The <code>model()</code> function in the <code>fable</code> package handles this training step automatically. It ingests your time series data and outputs a trained object that contains all the necessary parameters for prediction.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> trump_approval <span class="sc">|&gt;</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">linear_trend =</span> <span class="fu">TSLM</span>(approve <span class="sc">~</span> <span class="fu">trend</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>I now have a linear trend model of Mr Trump’s approval rating over time.</p>
+<p>We now have a trained statistical model of the President’s approval rating over time.</p>
 </section>
-<section id="evaluate-your-models-performance" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="evaluate-your-models-performance"><span class="header-section-number">1.5</span> Evaluate your model’s performance</h2>
-<p>Next, you should see how well your model performs on data on which it has not been trained. Can it accurately predict data it has never before seen?</p>
-</section>
-<section id="forecast" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="forecast"><span class="header-section-number">1.6</span> Forecast</h2>
-<p>If you are happy with your model, you can use it to predict future values. For example, I am now going to forecast Mr Trump’s approval ratings for the next five weeks using my linear trend model:</p>
+<section id="step-5-evaluate-your-models-performance" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="step-5-evaluate-your-models-performance"><span class="header-section-number">1.7</span> Step 5: Evaluate your model’s performance</h2>
+<p>How do you know if your model’s story is any good? You certainly can’t trust a model that only works on the data it was trained on! The key step in forecasting is rigorously <strong>evaluating the model’s performance</strong> on data it has <strong>never seen before</strong>.</p>
+<p>To do this, we often set aside the most recent historical data (the “test set” or “holdout set”). We then ask our trained model to “predict” these past, unseen values. We then compare the model’s predictions to the actual observed values. The difference between the prediction and the actual outcome is called the <strong>forecast error</strong>.</p>
+<p>Evaluating these errors—how big they are, if they are systematic, and if they are acceptable—is the only way to gain confidence in a model. If the errors are too large or follow a clear pattern (e.g., the model always overestimates the rating), the model is not trustworthy, and you must go back to <strong>Step 3: Specify Your Model</strong> and try a new, better story.</p>
+<p>The <code>fable</code> package provides the <code>accuracy()</code> function to quickly summarize these errors. To properly use it, we first need to split our data, train the model on the <em>training set</em>, and then compare its forecasts to the test set.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>trump_approval_forecast <span class="ot">&lt;-</span> <span class="fu">forecast</span>(fit, <span class="at">h =</span> <span class="st">"5 weeks"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>trump_approval_forecast</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Split the data: Use all but the last 10 weeks for training</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n_test <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>trump_train <span class="ot">&lt;-</span> trump_approval <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">n</span>() <span class="sc">-</span> n_test))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>trump_test <span class="ot">&lt;-</span> trump_approval <span class="sc">|&gt;</span> <span class="fu">slice</span>((<span class="fu">n</span>() <span class="sc">-</span> n_test <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span><span class="fu">n</span>())</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Train the model on the training data only</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>fit_train <span class="ot">&lt;-</span> trump_train <span class="sc">|&gt;</span> </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">linear_trend =</span> <span class="fu">TSLM</span>(approve <span class="sc">~</span> <span class="fu">trend</span>()))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Forecast for the test period</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>forecast_test <span class="ot">&lt;-</span> <span class="fu">forecast</span>(fit_train, <span class="at">new_data =</span> trump_test)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Show the accuracy metrics</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(forecast_test, trump_approval) <span class="sc">|&gt;</span> </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A fable: 5 x 4 [1W]
+<pre><code># A tibble: 1 × 3
+  .model        RMSE   MAE
+  &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;
+1 linear_trend  2.11  1.97</code></pre>
+</div>
+</div>
+<p>We will dedicate a whole chapter to interpreting these metrics like RMSE (Root Mean Squared Error) and MAE (Mean Absolute Error), but for now, just know that lower numbers mean a better-performing model.</p>
+</section>
+<section id="step-6-forecast" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="step-6-forecast"><span class="header-section-number">1.8</span> Step 6: Forecast</h2>
+<p>If, and only if, you are happy with your model’s performance on the holdout data, you can use it to predict future, unknown values. This final step is called <strong>forecasting</strong>.</p>
+<p>When you forecast, you are typically interested in two things:</p>
+<ol type="1">
+<li><p><strong>The Point Estimate (<code>.mean</code>):</strong> This is the model’s single best guess—the center of the prediction. For instance, the model’s best guess for the President’s approval rating in the future.</p></li>
+<li><p><strong>The Prediction Interval:</strong> This is the crucial measure of <strong>uncertainty</strong>. It provides a range of <strong>plausible values</strong> within which the actual outcome is likely to fall (e.g., 95 percent of the time). A good forecaster never provides a single number; they always provide this interval, acknowledging that the future is inherently uncertain.</p></li>
+</ol>
+<p>For example, we will now forecast the President’s approval ratings for the next 100 weeks using our simple linear trend model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>trump_approval_forecast <span class="ot">&lt;-</span> <span class="fu">forecast</span>(fit, <span class="at">h =</span> <span class="st">"100 weeks"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>trump_approval_forecast</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A fable: 100 x 4 [1W]
 # Key:     .model [1]
-  .model           date
-  &lt;chr&gt;          &lt;week&gt;
-1 linear_trend 2025 W41
-2 linear_trend 2025 W42
-3 linear_trend 2025 W43
-4 linear_trend 2025 W44
-5 linear_trend 2025 W45
+   .model           date
+   &lt;chr&gt;          &lt;week&gt;
+ 1 linear_trend 2025 W43
+ 2 linear_trend 2025 W44
+ 3 linear_trend 2025 W45
+ 4 linear_trend 2025 W46
+ 5 linear_trend 2025 W47
+ 6 linear_trend 2025 W48
+ 7 linear_trend 2025 W49
+ 8 linear_trend 2025 W50
+ 9 linear_trend 2025 W51
+10 linear_trend 2025 W52
+# ℹ 90 more rows
 # ℹ 2 more variables: approve &lt;dist&gt;, .mean &lt;dbl&gt;</code></pre>
 </div>
 </div>
-<p>I now have my forecast of Mr Trump’s approval rating for the next five weeks (each row corresponds to one week’s forecast). I have estimated a range of <strong>plausible values</strong> of his approval rating (<code>approve</code>). My <strong>point estimate</strong> is the center of this plausible range (<code>.mean</code>).</p>
-<p>It can be helpful to look at these predicted approval ratings in their context. Let’s plot them alongside his approval ratings so far:</p>
+<p>The output above shows your forecast: the <code>.mean</code> is your point estimate, and the columns with <code>80%</code> and <code>95%</code> confidence levels define the prediction intervals.</p>
+<p>Finally, we plot these predicted approval ratings alongside the observed history to see the whole story:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>trump_approval_forecast <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(trump_approval) <span class="sc">+</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Date"</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Approval rating (%)"</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data source: The Economist/YouGov"</span>) <span class="sc">+</span> </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>trump_approval_forecast <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(trump_approval) <span class="sc">+</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Approval rating (%)"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data source: The Economist/YouGov"</span>) <span class="sc">+</span> </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-trump-forecast" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -344,8 +410,8 @@ Figure&nbsp;1.2: Mr Trump’s approval ratings, both observed and predicted.
 </div>
 </div>
 </div>
-<p>Our simple model predicts that Mr Trump’s declining popularity will continue despite the brief up-tick he appeared to enjoy last week.</p>
-<p>This course introduces the skills you need to make predictions informed by what has happened in the past. Let’s get started!</p>
+<p>Our simple model predicts that the overall trend of declining popularity will continue. Notice how the uncertainty (the shaded dark and light blue areas) gets wider the further out we look. This intuitively makes sense: it’s easier to be sure about next week than next year.</p>
+<p>This entire process—from preparing the data to evaluating models and communicating uncertainty—is what this course is about. You will acquire the skills needed to make predictions informed by what has happened in the past and understand the level of risk you are taking. Let’s get started!</p>
 
 
 </section>

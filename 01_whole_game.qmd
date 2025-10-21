@@ -11,15 +11,35 @@ library(fable)
 
 # The Whole Game
 
-This brief introduction outlines each step you will take to produce your forecasts. 
+## A Forecasting Roadmap
 
-To illustrate, we will look at Mr Trump's approval rating across his current term in office. These data are collected on a near-weekly basis by the polling firm YouGov on behalf of *The Economist*. 
+Forecasting is the art and science of predicting the future. In political science, we can use it to better understand elections, the impact of policies, international conflict, and public opinion. In this course, you will learn how to move beyond simple guesswork and create structured, data-driven predictions—a skill invaluable in academia, government, and the private sector.
 
-## Prepare your data
+Think about the high-stakes world of modern politics. Every campaign manager, pundit, and policy analyst desperately wants to know what will happen next. Will a new policy boost a leader's popularity? Will a major news event sink a campaign? We can't know for certain, but we can manage our uncertainty by building powerful statistical models that learn from history.
 
-You first need to prepare your data for analysis. This can often be the most time-consuming part of your data analysis process. Happily, I have cleaned our data for you. 
+This introductory chapter provides a high-level roadmap of the entire forecasting process, from raw data to final prediction. Each step outlined here corresponds to a major topic we will dive into in later chapters. By the end of this course, you will be able to perform this entire process confidently and critique the forecasts you see every day in the news.
 
-The last step in this process is to convert your data set into a `tsibble` object, which has features that make time-series analysis easier.  
+## Our Illustrative Example: The Approval Rating Rollercoaster
+
+To illustrate the forecasting process, we will look at one of the most dynamic and closely watched metrics in political science: **the current US President's approval rating across their current term in office.**
+
+A President's approval rating is not just a vanity metric: it is a critical indicator of political capital, legislative success, and re-election prospects. The data we will use are collected on a near-weekly basis by the polling firm YouGov on behalf of *The Economist*. It provides the percentage of respondents from a representative sample of the US voting population who approve of President Trump's performance in office.
+
+This dataset is a perfect time series example: the data points are ordered in time, and each observation is influenced by the one that came before it. The challenge is clear: given the up-and-down rollercoaster of events, can we predict where the President's popularity will be next week, next month, or next year?
+
+## Step 1: Prepare Your Data
+
+Before any analysis can begin, you must first wrestle your data into a usable format. This step, which often involves cleaning messy spreadsheets, merging different data sources, and handling missing values, is often the most time-consuming part of any data science project.
+
+In time series analysis, there is a crucial final step: transforming your regular data frame into a special object that can handle **time**. We will use the `tsibble` object in R. The 'ts' stands for "time series." A `tsibble` is essentially a smart data frame that knows:
+
+1.  **What** the time variable is (e.g., `date`)
+
+2.  **How frequently** the data occur (e.g., weekly)
+
+3.  **In what order** the data should be processed
+
+Without this structure, R simply sees a list of numbers. With it, R sees a chronological history that can be modeled. In this course, we will mostly provide you with clean data, but understanding the importance of the `tsibble` structure is vital.
 
 ```{r}
 trump_approval <- read_rds(here::here("data", "trump_approval.rds")) |> 
@@ -29,9 +49,19 @@ trump_approval <- read_rds(here::here("data", "trump_approval.rds")) |>
 trump_approval
 ```
 
-## Plot your data
+## Step 2: Plot your data
 
-Next, you should plot your data. This will allow you to get a sense of the overall pattern of your data across time. What is the overall pattern? Do you see any repeated patterns across time? @fig-trump-approval shows Mr Trump's approval rating since his first day in office. 
+The very first analytical step is always visual: **plot your data**. Your eyes are often the best tool for identifying patterns that statistical formulas might miss. By visualizing the time series, you can better detect three major features:
+
+1.  **Trend:** Is the approval rating generally going up, staying flat, or going down over the long run?
+
+2.  **Seasonality:** Are there patterns that repeat over fixed, known intervals (e.g., does approval always dip during the summer recess or spike after a major national holiday)? In weekly polling data, true seasonality might be rare, but understanding the concept is key for other datasets.
+
+3.  **Cycles:** Are there longer, non-fixed patterns that don't repeat at a perfect interval, often linked to the political or economic cycle?
+
+Plotting the data allows you to get an intuitive feel for the **underlying story** your model will try to capture. We call this process Exploratory Data Analysis (EDA), and it is the foundation of selecting an appropriate forecasting model.
+
+@fig-trump-approval shows Mr Trump's approval rating since his first day in office. We can see that his approval rating is decreasing over his term in office.
 
 ```{r}
 #| label: fig-trump-approval
@@ -45,39 +75,85 @@ autoplot(trump_approval) +
   scale_y_continuous(limits = c(0, 100))
 ```
 
-## Specify your model
+## Step 3: Specify your model
 
-Next you need to specify an appropriate model for your data. There are many different models from which you can select. We will discuss several in this course. 
+The model specification step is where you formally decide on the **statistical story** you want to tell about your data. A statistical model is a simplified mathematical representation of reality. Since reality is messy, the model abstracts away the noise to focus on the signal—the core pattern.
 
-For now, I will select a simple model: a linear trend model (which we will discuss in detail shortly). 
+In this course, we will explore many different 'stories':
 
-## Train your model
+-   **Simple Trend Models (like the one below):** The story is that approval ratings change by a fixed, constant amount over time, plus some random, unpredictable noise.
 
-Next, you need to train your selected model on your data. For example, to train my linear trend model, I will run the following: 
+-   **Models based on previous values (Autoregressive models):** The story is that the best predictor of today's approval rating is yesterday's approval rating.
+
+-   **Advanced Models:** Combinations of the above that capture both trend and complex, changing relationships over time.
+
+For this initial demonstration, we will select the most straightforward story: a **linear trend model**. This model assumes that the change in approval rating over time can be represented by a straight line.
+
+## Step 4: Train your model
+
+Once you specify your model, you must **train** it. Training is the process of using your historical data (the observed approval ratings) to calculate the precise parameters that make your model's "story" fit the data and capture that core underlying pattern.
+
+In the case of our linear trend model, training involves finding the best possible straight line—specifically, calculating the best **starting point (intercept)** and the best **rate of change (slope)** that minimizes the vertical distance between the line and every observed data point.
+
+The `model()` function in the `fable` package handles this training step automatically. It ingests your time series data and outputs a trained object that contains all the necessary parameters for prediction.
 
 ```{r}
 fit <- trump_approval |> 
   model(linear_trend = TSLM(approve ~ trend()))
 ```
 
-I now have a linear trend model of Mr Trump's approval rating over time. 
+We now have a trained statistical model of the President's approval rating over time.
 
-## Evaluate your model's performance
+## Step 5: Evaluate your model's performance
 
-Next, you should see how well your model performs on data on which it has not been trained. Can it accurately predict data it has never before seen? 
+How do you know if your model's story is any good? You certainly can't trust a model that only works on the data it was trained on! The key step in forecasting is rigorously **evaluating the model's performance** on data it has **never seen before**.
 
-## Forecast
+To do this, we often set aside the most recent historical data (the "test set" or "holdout set"). We then ask our trained model to "predict" these past, unseen values. We then compare the model's predictions to the actual observed values. The difference between the prediction and the actual outcome is called the **forecast error**.
 
-If you are happy with your model, you can use it to predict future values. For example, I am now going to forecast Mr Trump's approval ratings for the next five weeks using my linear trend model: 
+Evaluating these errors—how big they are, if they are systematic, and if they are acceptable—is the only way to gain confidence in a model. If the errors are too large or follow a clear pattern (e.g., the model always overestimates the rating), the model is not trustworthy, and you must go back to **Step 3: Specify Your Model** and try a new, better story.
+
+The `fable` package provides the `accuracy()` function to quickly summarize these errors. To properly use it, we first need to split our data, train the model on the *training set*, and then compare its forecasts to the test set.
 
 ```{r}
-trump_approval_forecast <- forecast(fit, h = "5 weeks")
+# 1. Split the data: Use all but the last 10 weeks for training
+n_test <- 10
+trump_train <- trump_approval |> slice(1:(n() - n_test))
+trump_test <- trump_approval |> slice((n() - n_test + 1):n())
+
+# 2. Train the model on the training data only
+fit_train <- trump_train |> 
+  model(linear_trend = TSLM(approve ~ trend()))
+
+# 3. Forecast for the test period
+forecast_test <- forecast(fit_train, new_data = trump_test)
+
+# 4. Show the accuracy metrics
+accuracy(forecast_test, trump_approval) |> 
+  select(.model, RMSE, MAE)
+```
+
+We will dedicate a whole chapter to interpreting these metrics like RMSE (Root Mean Squared Error) and MAE (Mean Absolute Error), but for now, just know that lower numbers mean a better-performing model.
+
+## Step 6: Forecast
+
+If, and only if, you are happy with your model's performance on the holdout data, you can use it to predict future, unknown values. This final step is called **forecasting**.
+
+When you forecast, you are typically interested in two things:
+
+1.  **The Point Estimate (`.mean`):** This is the model's single best guess—the center of the prediction. For instance, the model's best guess for the President's approval rating in the future.
+
+2.  **The Prediction Interval:** This is the crucial measure of **uncertainty**. It provides a range of **plausible values** within which the actual outcome is likely to fall (e.g., 95 percent of the time). A good forecaster never provides a single number; they always provide this interval, acknowledging that the future is inherently uncertain.
+
+For example, we will now forecast the President's approval ratings for the next 100 weeks using our simple linear trend model:
+
+```{r}
+trump_approval_forecast <- forecast(fit, h = "100 weeks")
 trump_approval_forecast
 ```
 
-I now have my forecast of Mr Trump's approval rating for the next five weeks (each row corresponds to one week's forecast). I have estimated a range of **plausible values** of his approval rating (`approve`). My **point estimate** is the center of this plausible range (`.mean`). 
+The output above shows your forecast: the `.mean` is your point estimate, and the columns with `80%` and `95%` confidence levels define the prediction intervals.
 
-It can be helpful to look at these predicted approval ratings in their context. Let's plot them alongside his approval ratings so far: 
+Finally, we plot these predicted approval ratings alongside the observed history to see the whole story:
 
 ```{r}
 #| label: fig-trump-forecast
@@ -92,8 +168,6 @@ trump_approval_forecast |>
   scale_y_continuous(limits = c(0, 100))
 ```
 
-Our simple model predicts that Mr Trump's declining popularity will continue despite the brief up-tick he appeared to enjoy last week. 
+Our simple model predicts that the overall trend of declining popularity will continue. Notice how the uncertainty (the shaded dark and light blue areas) gets wider the further out we look. This intuitively makes sense: it's easier to be sure about next week than next year.
 
-This course introduces the skills you need to make predictions informed by what has happened in the past. Let's get started!
-
-
+This entire process—from preparing the data to evaluating models and communicating uncertainty—is what this course is about. You will acquire the skills needed to make predictions informed by what has happened in the past and understand the level of risk you are taking. Let's get started!

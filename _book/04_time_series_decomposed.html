@@ -85,7 +85,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./05_time_series_forecasts.html" rel="next">
+<link href="./references.html" rel="next">
 <link href="./03_time_series_r.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -206,25 +206,19 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02_forecasting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to Forecasting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Forecasting Landscape</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03_time_series_r.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to Time Series in R</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Toolkit: R for Time Series</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04_time_series_decomposed.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Finding Patterns Over Time</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./05_time_series_forecasts.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Time Series Regression Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -243,7 +237,7 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#trends" id="toc-trends" class="nav-link active" data-scroll-target="#trends"><span class="header-section-number">4.1</span> Trends</a></li>
+  <li><a href="#the-art-of-decomposition" id="toc-the-art-of-decomposition" class="nav-link active" data-scroll-target="#the-art-of-decomposition"><span class="header-section-number">4.1</span> The Art of Decomposition</a></li>
   <li><a href="#seasons-and-cycles" id="toc-seasons-and-cycles" class="nav-link" data-scroll-target="#seasons-and-cycles"><span class="header-section-number">4.2</span> Seasons and cycles</a>
   <ul class="collapse">
   <li><a href="#identifying-the-seasons" id="toc-identifying-the-seasons" class="nav-link" data-scroll-target="#identifying-the-seasons"><span class="header-section-number">4.2.1</span> Identifying the seasons</a></li>
@@ -280,9 +274,12 @@ window.Quarto = {
 </header>
 
 
-<p>At this early stage, we will focus on the skills and knowledge needed to explore and formalize the relationship between our outcome of interest and time itself. Is the President’s approval rating increasing or decreasing the longer they stay in office? Are there meaningful differences between voter turnout in mid-term elections compared to presidential ones? Is it true that we are seeing <a href="https://www.nytimes.com/athletic/6662614/2025/09/26/batting-average-mlb-value-hitter/">fewer and fewer .300 hitters</a> in the modern game? Once we have a handle on historical trends and patterns in our data, we will move on to using that information to make informed predictions about what comes next.</p>
-<section id="trends" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="trends"><span class="header-section-number">4.1</span> Trends</h2>
+<section id="the-art-of-decomposition" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="the-art-of-decomposition"><span class="header-section-number">4.1</span> The Art of Decomposition</h2>
+<p>At its core, time series forecasting is about recognizing patterns. When we look at a time series—like a stock price, a monthly sales figure, or a political approval rating—what we see is often a messy, complicated line. Our goal in this chapter is to develop the skills to explore and formalize the relationship between our outcome of interest and time itself by breaking that messy line into three cleaner, more predictable components: the <strong>Trend</strong>, the <strong>Seasonality</strong>, and the <strong>Remainder</strong>.</p>
+<p>This process is called <strong>Time Series Decomposition</strong>. It’s like taking apart a complex machine (the time series) into its simple, functional components. Once we understand how each component works in isolation, we can put them back together to make powerful predictions.</p>
+<p>The decomposition model we rely on is generally expressed as:</p>
+<p>Trends</p>
 <p>Let’s take another look at Mr Trump’s approval rating over his current term in office, which is shown in <a href="#fig-trump-approval" class="quarto-xref">Figure&nbsp;<span>4.1</span></a>. If I asked you to summarize how his popularity was tracking, what would you say?</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -1079,13 +1076,13 @@ Cleveland, Robert B., William S. Cleveland, and Irma Terpenning. 1990. <span>“
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./03_time_series_r.html" class="pagination-link" aria-label="Introduction to Time Series in R">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to Time Series in R</span></span>
+      <a href="./03_time_series_r.html" class="pagination-link" aria-label="The Toolkit: R for Time Series">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Toolkit: R for Time Series</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./05_time_series_forecasts.html" class="pagination-link" aria-label="Time Series Regression Models">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Time Series Regression Models</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

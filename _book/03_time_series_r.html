@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>3&nbsp; Introduction to Time Series in R – From Polls to Playoffs: The Science of Prediction</title>
+<title>3&nbsp; The Toolkit: R for Time Series – From Polls to Playoffs: The Science of Prediction</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_time_series_r.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to Time Series in R</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_time_series_r.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Toolkit: R for Time Series</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -157,25 +157,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02_forecasting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to Forecasting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Forecasting Landscape</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03_time_series_r.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to Time Series in R</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Toolkit: R for Time Series</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04_time_series_decomposed.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Finding Patterns Over Time</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./05_time_series_forecasts.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Time Series Regression Models</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -194,15 +188,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#tsibble-objects" id="toc-tsibble-objects" class="nav-link active" data-scroll-target="#tsibble-objects"><span class="header-section-number">3.1</span> <code>tsibble</code> objects</a>
+  <li><a href="#the-foundation-the-tsibble-object" id="toc-the-foundation-the-tsibble-object" class="nav-link active" data-scroll-target="#the-foundation-the-tsibble-object"><span class="header-section-number">3.1</span> The Foundation: The <code>tsibble</code> Object</a>
   <ul class="collapse">
-  <li><a href="#indexes" id="toc-indexes" class="nav-link" data-scroll-target="#indexes"><span class="header-section-number">3.1.1</span> Indexes</a></li>
-  <li><a href="#keys" id="toc-keys" class="nav-link" data-scroll-target="#keys"><span class="header-section-number">3.1.2</span> Keys</a></li>
-  <li><a href="#working-with-tsibble-objects" id="toc-working-with-tsibble-objects" class="nav-link" data-scroll-target="#working-with-tsibble-objects"><span class="header-section-number">3.1.3</span> Working with <code>tsibble</code> objects</a></li>
+  <li><a href="#why-a-tsibble" id="toc-why-a-tsibble" class="nav-link" data-scroll-target="#why-a-tsibble"><span class="header-section-number">3.1.1</span> Why a <code>tsibble</code>?</a></li>
+  <li><a href="#indexes-and-keys-the-dna-of-a-tsibble" id="toc-indexes-and-keys-the-dna-of-a-tsibble" class="nav-link" data-scroll-target="#indexes-and-keys-the-dna-of-a-tsibble"><span class="header-section-number">3.1.2</span> Indexes and Keys: The DNA of a <code>tsibble</code></a></li>
   </ul></li>
-  <li><a href="#plotting-your-time-series-data" id="toc-plotting-your-time-series-data" class="nav-link" data-scroll-target="#plotting-your-time-series-data"><span class="header-section-number">3.2</span> Plotting your time series data</a>
+  <li><a href="#visualizing-and-diagnosing-feasts-and-ggtime" id="toc-visualizing-and-diagnosing-feasts-and-ggtime" class="nav-link" data-scroll-target="#visualizing-and-diagnosing-feasts-and-ggtime"><span class="header-section-number">3.2</span> Visualizing and Diagnosing: <code>feasts</code> and <code>ggtime</code></a>
   <ul class="collapse">
-  <li><a href="#plotting-grouped-data" id="toc-plotting-grouped-data" class="nav-link" data-scroll-target="#plotting-grouped-data"><span class="header-section-number">3.2.1</span> Plotting grouped data</a></li>
+  <li><a href="#visualization-with-autoplot-and-ggtime" id="toc-visualization-with-autoplot-and-ggtime" class="nav-link" data-scroll-target="#visualization-with-autoplot-and-ggtime"><span class="header-section-number">3.2.1</span> Visualization with <code>autoplot</code> and <code>ggtime</code></a></li>
+  <li><a href="#diagnostic-tools-with-feasts" id="toc-diagnostic-tools-with-feasts" class="nav-link" data-scroll-target="#diagnostic-tools-with-feasts"><span class="header-section-number">3.2.2</span> Diagnostic Tools with <code>feasts</code></a></li>
+  </ul></li>
+  <li><a href="#the-engine-the-fable-package" id="toc-the-engine-the-fable-package" class="nav-link" data-scroll-target="#the-engine-the-fable-package"><span class="header-section-number">3.3</span> The Engine: The <code>fable</code> Package</a>
+  <ul class="collapse">
+  <li><a href="#step-1-model---fitting-the-model" id="toc-step-1-model---fitting-the-model" class="nav-link" data-scroll-target="#step-1-model---fitting-the-model"><span class="header-section-number">3.3.1</span> Step 1: <code>model()</code> - Fitting the Model</a></li>
+  <li><a href="#step-2-forecast---generating-predictions" id="toc-step-2-forecast---generating-predictions" class="nav-link" data-scroll-target="#step-2-forecast---generating-predictions"><span class="header-section-number">3.3.2</span> Step 2: <code>forecast()</code> - Generating Predictions</a></li>
+  <li><a href="#step-3-autoplot---visualizing-the-forecast" id="toc-step-3-autoplot---visualizing-the-forecast" class="nav-link" data-scroll-target="#step-3-autoplot---visualizing-the-forecast"><span class="header-section-number">3.3.3</span> Step 3: <code>autoplot()</code> - Visualizing the Forecast</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -212,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to Time Series in R</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Toolkit: R for Time Series</span></h1>
 </div>
 
 
@@ -232,42 +232,93 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggtime)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fable)  <span class="co"># Core modeling framework</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(feasts) <span class="co"># Feature extraction and diagnostic tools</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggtime) <span class="co"># For advanced time series plots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Before we dive in, you need to learn how to work with time series data in R. This chapter introduces you to the <code>tsibble</code> and <code>ggtime</code> R packages, which make working with and visualizing time series data easy.</p>
-<section id="tsibble-objects" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="tsibble-objects"><span class="header-section-number">3.1</span> <code>tsibble</code> objects</h2>
-<p>The easiest way to handle time series data in R is as a <code>tsibble</code> object. For example, here is a normal <code>tibble</code> of Mr Trump’s approval ratings across his current term in office:</p>
+<p>You are already proficient with R and the <code>tidyverse</code>, which gives you a powerful foundation for data manipulation. However, time series data are special. Unlike a standard dataset where each row is independent, <strong>in a time series, the order matters.</strong> A value today is highly dependent on the value yesterday.</p>
+<p>To handle this dependency and make forecasting efficient and error-free, the R community has developed a specialized ecosystem of packages collectively known as the <strong><code>fable</code> framework</strong>.</p>
+<p>This chapter introduces the four core tools you will use in this course:</p>
+<ol type="1">
+<li><p><strong><code>tsibble</code></strong>: The specialized data structure for time series.</p></li>
+<li><p><strong><code>feasts</code></strong>: The toolkit for diagnosing and visualizing time series patterns.</p></li>
+<li><p><strong><code>fable</code></strong>: The engine for fitting models and generating forecasts.</p></li>
+<li><p><strong><code>ggtime</code></strong>: The visual layer for making beautiful time series plots.</p></li>
+</ol>
+<section id="the-foundation-the-tsibble-object" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="the-foundation-the-tsibble-object"><span class="header-section-number">3.1</span> The Foundation: The <code>tsibble</code> Object</h2>
+<section id="why-a-tsibble" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="why-a-tsibble"><span class="header-section-number">3.1.1</span> Why a <code>tsibble</code>?</h3>
+<p>A standard <code>tibble</code> or <code>data.frame</code> treats columns like <code>date</code> or <code>week</code> as just text or numbers. A <code>tsibble</code> (Time Series Tibble) is a <em>smart</em> data structure. It forces you to define <strong>what</strong> is being measured and <strong>when</strong> it was measured. It automatically flags missing time points, helps manage multiple concurrent time series, and ensures your models treat the data’s time dependency correctly.</p>
+</section>
+<section id="indexes-and-keys-the-dna-of-a-tsibble" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="indexes-and-keys-the-dna-of-a-tsibble"><span class="header-section-number">3.1.2</span> Indexes and Keys: The DNA of a <code>tsibble</code></h3>
+<p>Every <code>tsibble</code> has two defining features:</p>
+<section id="the-index-the-when" class="level4" data-number="3.1.2.1">
+<h4 data-number="3.1.2.1" class="anchored" data-anchor-id="the-index-the-when"><span class="header-section-number">3.1.2.1</span> The Index (The <em>When</em>)</h4>
+<p>The index is the column that specifies the time point of the observation. The <code>tsibble</code> package provides several helper functions to convert standard dates/times into time-aware indices:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Frequency</th>
+<th>Function</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Yearly</strong></td>
+<td><code>year()</code></td>
+<td><code>year(2025)</code></td>
+</tr>
+<tr class="even">
+<td><strong>Quarterly</strong></td>
+<td><code>yearquarter()</code></td>
+<td><code>yearquarter(2025 Q3)</code></td>
+</tr>
+<tr class="odd">
+<td><strong>Monthly</strong></td>
+<td><code>yearmonth()</code></td>
+<td><code>yearmonth(2025 Oct)</code></td>
+</tr>
+<tr class="even">
+<td><strong>Weekly</strong></td>
+<td><code>yearweek()</code></td>
+<td><code>yearweek(2025 W42)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Let’s use the provided political science data to demonstrate. We convert the <code>date</code> column into a weekly index using <code>yearweek()</code> and then convert the entire <code>tibble</code> into a <code>tsibble</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>trump_approval <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"trump_approval.rds"</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>trump_approval</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a standard tibble of Mr. Trump's approval ratings</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>trump_approval <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"trump_approval.rds"</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>trump_approval</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 36 × 2
+<pre><code># A tibble: 38 × 2
    date       approve
    &lt;date&gt;       &lt;dbl&gt;
- 1 2025-09-29      40
- 2 2025-09-22      39
- 3 2025-09-15      39
- 4 2025-09-08      41
- 5 2025-09-02      41
- 6 2025-08-04      41
- 7 2025-08-25      41
- 8 2025-08-18      40
- 9 2025-08-11      42
-10 2025-07-07      42
-# ℹ 26 more rows</code></pre>
+ 1 2025-10-13      40
+ 2 2025-10-06      39
+ 3 2025-09-29      40
+ 4 2025-09-22      39
+ 5 2025-09-08      41
+ 6 2025-09-02      41
+ 7 2025-09-15      39
+ 8 2025-08-04      41
+ 9 2025-08-25      41
+10 2025-08-18      40
+# ℹ 28 more rows</code></pre>
 </div>
 </div>
-<p>These data are actually collected on a weekly basis by YouGov on behalf of <em>The Economist</em>. Although they have very good coverage, they do miss some weeks. It is difficult to see that these are weekly data and where our coverage is missing in this current format.</p>
-<p>So, let’s convert it to a <code>tsibble</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>trump_approval_ts <span class="ot">&lt;-</span> trump_approval <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearweek</span>(date)) <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>()</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>trump_approval_ts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert it to a tsibble, setting the index explicitly</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>trump_approval_ts <span class="ot">&lt;-</span> trump_approval <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearweek</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>trump_approval_ts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tsibble: 36 x 2 [1W]
+<pre><code># A tsibble: 38 x 2 [1W]
        date approve
      &lt;week&gt;   &lt;dbl&gt;
  1 2025 W05      49
@@ -280,84 +331,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  8 2025 W12      45
  9 2025 W13      48
 10 2025 W14      46
-# ℹ 26 more rows</code></pre>
+# ℹ 28 more rows</code></pre>
 </div>
 </div>
-<p>Much better! The <code>tsibble</code> handles the “timing” of it all much more nicely than a standard <code>tibble</code>. By converting the <code>date</code> column to weekly data using the <code>yearweek()</code> function and the data set itself into a <code>tsibble</code> object, I have ensured that any visualizations or models I build using these data will be treated appropriately.</p>
-<section id="indexes" class="level3" data-number="3.1.1">
-<h3 data-number="3.1.1" class="anchored" data-anchor-id="indexes"><span class="header-section-number">3.1.1</span> Indexes</h3>
-<p>The column that records the time of your observations is referred to as the <code>index</code>. <code>as_tibble()</code> will often do a good job of guessing which column should be treated as your index, but you can specify it directly using the <code>index</code> argument. For examle:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>trump_approval <span class="sc">|&gt;</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearweek</span>(date)) <span class="sc">|&gt;</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>(<span class="at">index =</span> date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 36 × 2
-       date approve
-     &lt;week&gt;   &lt;dbl&gt;
- 1 2025 W40      40
- 2 2025 W39      39
- 3 2025 W38      39
- 4 2025 W37      41
- 5 2025 W36      41
- 6 2025 W32      41
- 7 2025 W35      41
- 8 2025 W34      40
- 9 2025 W33      42
-10 2025 W28      42
-# ℹ 26 more rows</code></pre>
-</div>
-</div>
-<p><code>tsibble</code> objects can handle many different frequencies:</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Frequency</th>
-<th style="text-align: left;">Function</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Yearly</td>
-<td style="text-align: left;"><code>year()</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Quarterly</td>
-<td style="text-align: left;"><code>yearquarter()</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Monthly</td>
-<td style="text-align: left;"><code>yearmonth()</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Weekly</td>
-<td style="text-align: left;"><code>yearweek()</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Daily</td>
-<td style="text-align: left;">See: <code>as_date()</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Sub-daily</td>
-<td style="text-align: left;">See <code>as_datetime()</code></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p>Notice how the <code>tsibble</code> output clearly labels <code>date</code> as the <strong>Index</strong> and immediately tells us the data is collected weekly.</p>
 </section>
-<section id="keys" class="level3" data-number="3.1.2">
-<h3 data-number="3.1.2" class="anchored" data-anchor-id="keys"><span class="header-section-number">3.1.2</span> Keys</h3>
-<p><code>tsibble</code> objects are also very good at handling multiple groups within your data. For example, you might have data on all teams in a league. It can be useful to group those data by team.</p>
-<p>Below is data on each AFL team’s performance throughout the 2024 season. For example, we have data on their position in the ladder throughout the season (<code>ladder_position</code>), the cumulative number of points they have scored (<code>score_for</code>) and have had scored against them (<code>score_against</code>).</p>
-<p>There were 25 rounds in the regular season (excluding finals). Those rounds are my <code>index</code>. I want to track each team’s performance across the season. Therefore, my <code>key</code> is the team.</p>
+<section id="the-key-the-what" class="level4" data-number="3.1.2.2">
+<h4 data-number="3.1.2.2" class="anchored" data-anchor-id="the-key-the-what"><span class="header-section-number">3.1.2.2</span> The Key (The What)</h4>
+<p>In many forecasting projects, you deal with multiple, independent time series simultaneously (e.g., all 30 NBA teams, or all 50 US states). The Key is the column that identifies which individual series each observation belongs to.</p>
+<p>The Australian Football League (AFL) data provides a great example. We want to track 18 different teams over the season’s 25 rounds.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>afl_ladder <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"afl_ladder.rds"</span>))</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>afl_ladder_ts <span class="ot">&lt;-</span> <span class="fu">as_tsibble</span>(afl_ladder, <span class="at">key =</span> team, <span class="at">index =</span> round_number)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>afl_ladder_ts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data on each AFL team's performance</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>afl_ladder <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"afl_ladder.rds"</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to a tsibble, defining 'team' as the key and 'round_number' as the index</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>afl_ladder_ts <span class="ot">&lt;-</span> afl_ladder <span class="sc">|&gt;</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">key =</span> team, <span class="at">index =</span> round_number)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>afl_ladder_ts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tsibble: 450 x 8 [1]
 # Key:       team [18]
@@ -377,59 +368,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 # ℹ 1 more variable: ladder_position &lt;int&gt;</code></pre>
 </div>
 </div>
-<p>Notice that the <code>tsibble</code> object prints my key above the the data set. It recognizes that there are 18 different groups (teams) in my key. I now have 18 different time series (each team’s performance across the season) stored in one convenient data set. I can look at overall trends and compare the 18 different teams’ performance easily.</p>
-</section>
-<section id="working-with-tsibble-objects" class="level3" data-number="3.1.3">
-<h3 data-number="3.1.3" class="anchored" data-anchor-id="working-with-tsibble-objects"><span class="header-section-number">3.1.3</span> Working with <code>tsibble</code> objects</h3>
-<p>On a <code>tsibble</code>, we can use all of the functions that you can use on a normal <code>tibble</code> or <code>data.frame</code> object. They are set up with the <code>tidyverse</code> in mind, so functions in that family work seamlessly.</p>
-<p>For example, I can filter my data set of Mr Trump’s approval rating to look only at his approval in weeks five to 10 of his current term<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(trump_approval_ts, date <span class="sc">&lt;=</span> <span class="fu">yearweek</span>(<span class="st">"2025 W10"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tsibble: 6 x 2 [1W]
-      date approve
-    &lt;week&gt;   &lt;dbl&gt;
-1 2025 W05      49
-2 2025 W06      46
-3 2025 W07      46
-4 2025 W08      50
-5 2025 W09      48
-6 2025 W10      48</code></pre>
-</div>
-</div>
-<p>I can also quickly calculate Mr Trump’s average approval rating across his term in office:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(trump_approval_ts, <span class="at">avg_approve =</span> <span class="fu">mean</span>(approve))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tsibble: 36 x 2 [1W]
-       date avg_approve
-     &lt;week&gt;       &lt;dbl&gt;
- 1 2025 W05          49
- 2 2025 W06          46
- 3 2025 W07          46
- 4 2025 W08          50
- 5 2025 W09          48
- 6 2025 W10          48
- 7 2025 W11          47
- 8 2025 W12          45
- 9 2025 W13          48
-10 2025 W14          46
-# ℹ 26 more rows</code></pre>
-</div>
-</div>
+<p>The output now shows <code>Key: team [18]</code>, meaning we have 18 unique time series bundled together. This allows us to run one single model command to fit 18 separate models—one for each team!</p>
 </section>
 </section>
-<section id="plotting-your-time-series-data" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="plotting-your-time-series-data"><span class="header-section-number">3.2</span> Plotting your time series data</h2>
-<p>Patterns in our data are often most easily detected when we visualize them. The simplest plot to start with is a time series plot. The <code>ggtime</code> R package provides a series of functions that make visualizing time series data simple.</p>
-<p>For example, <a href="04_time_series_decomposed.html#fig-trump-approval" class="quarto-xref">Figure&nbsp;<span>4.1</span></a> shows Mr Trump’s approval ratings across his current term.</p>
+</section>
+<section id="visualizing-and-diagnosing-feasts-and-ggtime" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="visualizing-and-diagnosing-feasts-and-ggtime"><span class="header-section-number">3.2</span> Visualizing and Diagnosing: <code>feasts</code> and <code>ggtime</code></h2>
+<p>Before modeling, you must understand the pattern of your data. The <code>feasts</code> package (Feature Extraction and Statistics for Time Series) and the <code>ggtime</code> extension for <code>ggplot2</code> make this diagnosis easy. <strong>We’ll cover the interpretation of these plots and models in depth later; for now, focus on running the code to see what tools are available.</strong></p>
+<section id="visualization-with-autoplot-and-ggtime" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="visualization-with-autoplot-and-ggtime"><span class="header-section-number">3.2.1</span> Visualization with <code>autoplot</code> and <code>ggtime</code></h3>
+<p>The <code>autoplot()</code> function, adapted from <code>ggtime</code>, is the quickest way to visualize a <code>tsibble</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(trump_approval_ts) <span class="sc">+</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Date"</span>,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Approval rating (%)"</span>,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data source: The Economist/YouGov"</span>) <span class="sc">+</span> </span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(trump_approval_ts, approve) <span class="sc">+</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trump Approval Rating"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Approval rating (%)"</span>) <span class="sc">+</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-trump-approval" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -443,40 +398,160 @@ Figure&nbsp;3.1: Mr Trump’s approval ratings since entering his second term in
 </div>
 </div>
 </div>
-<p>We can see that Mr Trump’s popularity is declining. In fact, he has not yet enjoyed more than 50 percent of the US voting public’s approval.</p>
-<section id="plotting-grouped-data" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="plotting-grouped-data"><span class="header-section-number">3.2.1</span> Plotting grouped data</h3>
-<p>We can also plot grouped data to more easily make comparisons between them. For example, <a href="#fig-afl-ladder" class="quarto-xref">Figure&nbsp;<span>3.2</span></a> plots each of the 18 AFL teams’ score percentages across the 2024 season. Some teams, including long-suffering North Melbourne, never managed to score more points than they conceded. Other teams, including the Sydney Swans, managed to never dip below 100 percent.</p>
+<p>This plot immediately reveals the central trend: a declining trajectory.</p>
+<p>When dealing with grouped data (like the AFL teams), <code>autoplot</code> automatically plots every series, making comparisons easy:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(afl_ladder_ts, percentage) <span class="sc">+</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Round"</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Scoring percentage"</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data source: AFL Tables"</span>) <span class="sc">+</span> </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(afl_ladder_ts, percentage) <span class="sc">+</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"AFL Team Score Percentage Over 2024 Season"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Round"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Scoring Percentage (For / Against)"</span>) <span class="sc">+</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">scale =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-afl-ladder" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-afl-ladder-percentage" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-afl-ladder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="03_time_series_r_files/figure-html/fig-afl-ladder-1.png" class="img-fluid figure-img" width="672">
+<div aria-describedby="fig-afl-ladder-percentage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03_time_series_r_files/figure-html/fig-afl-ladder-percentage-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-afl-ladder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-afl-ladder-percentage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3.2: AFL teams’ score percentage across the 2024 regular season.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p>The plot shows 18 individual lines, allowing us to immediately see which teams (like the Sydney Swans, consistently above 100%) were successful and which (like North Melbourne, consistently below 100%) struggled.</p>
+</section>
+<section id="diagnostic-tools-with-feasts" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="diagnostic-tools-with-feasts"><span class="header-section-number">3.2.2</span> Diagnostic Tools with <code>feasts</code></h3>
+<p>The most critical diagnostic plot in time series is the <strong>Seasonal Plot</strong> and the <strong>ACF (Autocorrelation Function) Plot</strong>.</p>
+<ul>
+<li><strong>Autocorrelation Function (<code>ACF</code>)</strong>: This plot tells you how correlated the variable is with its past values (lags). If the approval rating today is highly correlated with the approval rating 5 weeks ago, the ACF plot will show a strong spike at “Lag 5”. This helps us identify hidden dependencies and seasonality.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use ACF to check for dependencies</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>trump_approval_ts <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ACF</span>(approve) <span class="sc">|&gt;</span> <span class="co"># Calculate the AutoCorrelation Function</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Autocorrelation in Trump Approval Rating"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"High correlation means past values influence current values."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_time_series_r_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The initial spikes in the ACF plot tell us that approval ratings are highly correlated with the immediately preceding weeks, which is expected.</p>
+<ul>
+<li><strong>Decomposition</strong>: Many series have a <strong>Trend</strong> (the long-term movement), a <strong>Seasonality</strong> (a repeating, predictable pattern, like higher sales in December), and a <strong>Remainder</strong> (the random noise). The <code>feasts</code> function <code>model</code> (which uses <code>decomposition_model</code>) helps separate these components, which is essential for accurate modeling.</li>
+</ul>
+<p>Let’s use the <code>model</code> function with <code>STL()</code> (Seasonal and Trend decomposition using Loess) to visualize these components:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Decompose the time series into its components</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>trump_approval_ts <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">decomposition =</span> <span class="fu">STL</span>(approve) <span class="co"># Use STL to separate trend, seasonality, and remainder</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span> <span class="co"># Extract the components</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Decomposition of Trump Approval Rating"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_time_series_r_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The resulting plot shows four panels: the original observed data, the estimated Trend (the smooth, long-term movement), the Seasonal component (the weekly pattern, if any), and the Remainder (the residual noise not explained by trend or seasonality).</p>
+</section>
+</section>
+<section id="the-engine-the-fable-package" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="the-engine-the-fable-package"><span class="header-section-number">3.3</span> The Engine: The <code>fable</code> Package</h2>
+<p>The <code>fable</code> package is the core modeling engine. It uses a clean, three-step pipeline that aligns perfectly with the <code>tidyverse</code> philosophy: <strong><code>model()</code> -&gt; <code>forecast()</code> -&gt; <code>autoplot()</code></strong>. <strong>Like decomposition, we will dive deep into specific forecasting models later. For now, focus on the workflow—how to fit a model, generate a forecast, and visualize the result.</strong></p>
+<section id="step-1-model---fitting-the-model" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="step-1-model---fitting-the-model"><span class="header-section-number">3.3.1</span> Step 1: <code>model()</code> - Fitting the Model</h3>
+<p>The <code>model()</code> function takes a <code>tsibble</code> and specifies the model(s) you want to fit using a formula. The output is a special <strong><code>mable</code></strong> (Model Table) object.</p>
+<p>We can fit the simple linear trend model we saw in the last chapter using the <code>TSLM()</code> (Time Series Linear Model) function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit_approval <span class="ot">&lt;-</span> trump_approval_ts <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">linear_trend =</span> <span class="fu">TSLM</span>(approve <span class="sc">~</span> <span class="fu">trend</span>()),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We can fit multiple models at once!</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_model =</span> <span class="fu">MEAN</span>(approve)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>fit_approval</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A mable: 1 x 2
+  linear_trend mean_model
+       &lt;model&gt;    &lt;model&gt;
+1       &lt;TSLM&gt;     &lt;MEAN&gt;</code></pre>
+</div>
+</div>
+<p>The <code>mable</code> object now holds two fully trained models ready for forecasting.</p>
+</section>
+<section id="step-2-forecast---generating-predictions" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="step-2-forecast---generating-predictions"><span class="header-section-number">3.3.2</span> Step 2: <code>forecast()</code> - Generating Predictions</h3>
+<p>The <code>forecast()</code> function takes the <code>mable</code> object and tells it how far into the future (the <strong>horizon,</strong> or <code>h</code>) to predict.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Forecast approval ratings 5 weeks into the future</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>approval_forecast <span class="ot">&lt;-</span> fit_approval <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"5 weeks"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>approval_forecast</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A fable: 10 x 4 [1W]
+# Key:     .model [2]
+   .model           date
+   &lt;chr&gt;          &lt;week&gt;
+ 1 linear_trend 2025 W43
+ 2 linear_trend 2025 W44
+ 3 linear_trend 2025 W45
+ 4 linear_trend 2025 W46
+ 5 linear_trend 2025 W47
+ 6 mean_model   2025 W43
+ 7 mean_model   2025 W44
+ 8 mean_model   2025 W45
+ 9 mean_model   2025 W46
+10 mean_model   2025 W47
+# ℹ 2 more variables: approve &lt;dist&gt;, .mean &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>The output is a <strong><code>fable</code></strong> object (Forecast Table). Notice it provides the <code>.mean</code> (the point estimate) and a distribution for the prediction, allowing us to calculate the <strong>Prediction Interval</strong> (the range of plausible future values).</p>
+</section>
+<section id="step-3-autoplot---visualizing-the-forecast" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="step-3-autoplot---visualizing-the-forecast"><span class="header-section-number">3.3.3</span> Step 3: <code>autoplot()</code> - Visualizing the Forecast</h3>
+<p>Finally, we plot the forecast using the original data and the <code>autoplot()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the forecast table automatically includes the original data</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>approval_forecast <span class="sc">|&gt;</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(trump_approval_ts, <span class="at">level =</span> <span class="dv">80</span>) <span class="sc">+</span> <span class="co"># Show an 80% prediction interval</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trump Approval Forecast: Linear Trend vs. Historical Mean"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Approval rating (%)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-approval-forecast-combined" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-approval-forecast-combined-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03_time_series_r_files/figure-html/fig-approval-forecast-combined-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-approval-forecast-combined-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.3: Observed approval ratings with a 5-week forecast from two different models.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The resulting plot clearly shows the declining linear trend model and the flat line of the historical mean model, along with their respective 80% uncertainty cones (the shaded region). This visual comparison is the most powerful way to evaluate your models before deployment.</p>
+<p>By mastering the <code>tsibble</code>, <code>feasts</code>, and <code>fable</code> pipeline, you gain a robust, modern, and efficient set of tools to tackle nearly any time series forecasting challenge, whether in political science or sports analytics.</p>
 
 
 </section>
-</section>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p>The poll only started after his fifth week in office.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
 </section>
 
 </main> <!-- /main -->
@@ -881,8 +956,8 @@ Figure&nbsp;3.2: AFL teams’ score percentage across the 2024 regular season.
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02_forecasting.html" class="pagination-link" aria-label="Introduction to Forecasting">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction to Forecasting</span></span>
+      <a href="./02_forecasting.html" class="pagination-link" aria-label="The Forecasting Landscape">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Forecasting Landscape</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
