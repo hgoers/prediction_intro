@@ -14,4 +14,6 @@ trump_approval <- trump_approval_raw |>
   ) |>
   transmute(date = mdy(enddate), approve)
 
+trump_approval
+
 write_rds(trump_approval, here::here("data", "trump_approval.rds"))
